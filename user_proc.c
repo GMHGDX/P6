@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
     int msqid = 0;
     key_t msqkey;
 
-    int resourceLim = 20;
+    int resourceLim = 5;
     int resourceAsk[10];
 
     srand(time(0) + getpid()); //seed for random number generator
@@ -60,8 +60,7 @@ int main(int argc, char *argv[]){
         }
     }
 
-    //copy our new string into mtext
-    strcpy(buf.strData, together);
+    strcpy(buf.strData, together); //copy our new string into mtext
 
     //for sending message to the parent
     buf.intData = getpid();

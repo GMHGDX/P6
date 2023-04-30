@@ -29,12 +29,11 @@ int rear = -1;
 int itemCount = 0;
 
 queue peek() { return blockedQueue[front]; }
-
 bool isEmpty() { return itemCount == 0; }
-
 bool isFull() { return itemCount == MAX; }
-
 int size() { return itemCount; }  
+
+void printResourcetable(int resourceTable[][10]);
 
 void insert(queue data) {
    if(!isFull()) {
@@ -60,8 +59,6 @@ queue removeData() {
    return data;  
 }
 
-void printResourcetable(int resourceTable[][10]);
-
 typedef struct pidstruct {
     pid_t realpid;
     int simpid;
@@ -79,9 +76,7 @@ int main(int argc, char *argv[]){
     int resourcesLeft[10];
     pidstruct mypidstruct[50];
 
-    for(i=0;i<50;i++){
-        mypidstruct[i].simpid = -1;
-    }
+    for(i=0;i<50;i++){ mypidstruct[i].simpid = -1;} //initialize wsimulated PID
 
     srand(time(0)); //Seed the random number generator
 
@@ -103,8 +98,7 @@ int main(int argc, char *argv[]){
     {
         switch (opt)
         {
-        //help message
-        case 'h':
+        case 'h': //help message
 			printf("To run this project: \n\n");
             printf("run the command: ./oss -n num -s num -t num\n\n");
                     printf("\t-f = name of logfile you wish to write the process table in oss.c to\n\n"); 
@@ -113,7 +107,7 @@ int main(int argc, char *argv[]){
 
                     exit(0);
             break;
-        case 'f':
+        case 'f': //logfile
             logFile = optarg; 
             break;
         default:
@@ -138,7 +132,7 @@ int main(int argc, char *argv[]){
 
     //Create resource header
     printf("\t");
-     fprintf(fileLogging, "\t");
+    fprintf(fileLogging, "\t");
     for(i=0;i<10;i++){
         printf("1R%i\t", i);
         fprintf(fileLogging, "R%i\t", i);
@@ -187,7 +181,6 @@ int main(int argc, char *argv[]){
     bool allResourcesFree = false;
 
     while(1) {
-
         //stop simulated system clock and get seconds and nanoseconds
         if( clock_gettime( CLOCK_REALTIME, &stop) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
         sec = (stop.tv_sec - start.tv_sec); 
@@ -205,11 +198,8 @@ int main(int argc, char *argv[]){
         *shm_ptr = writeToMem;
 
         if(limitReach <= currentTime && numofchild < 10 && currentTime <= 5){
-        //if(numofchild < 2){   //For testing //add parameter for 40 children and more than 5 real seconds
             numofchild++;
-           
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
-
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
 
             childpid = fork(); //fork child
@@ -244,13 +234,12 @@ int main(int argc, char *argv[]){
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), IPC_NOWAIT); // receive a message from user_proc, but only one for our PID
         checkWhatToDo = atoi(buf.strData);  //If 0, means a process has died, if greater than 0, meana we got some reacourses to alloacte
 
-        if(checkWhatToDo == 0){
-            //de allocate ur shit
-            printf("Dealloacting\n");
+        if(checkWhatToDo == 0){//-----------------------------------------------------------------------------------------------------------------
+            printf("Dealloacting\n"); //deallocating resources from the process
             fprintf(fileLogging, "Dealloacting\n");
             i = 0;
             while(i < 18){
-                if(mypidstruct[i].realpid == buf.intData){  //Will this crash if mypidstruct[i].realpid is not set to anything (unitalized)
+                if(mypidstruct[i].realpid == buf.intData){ 
                     simpidofsender = mypidstruct[i].simpid;
 
                     mypidstruct[i].realpid = 0; //Clear out the position in mypidstruct for reuse
@@ -258,8 +247,8 @@ int main(int argc, char *argv[]){
 
                     printf("Resources deallocated: ");
                     fprintf(fileLogging, "Resources deallocated: ");
-                    //Update resource table with new values
-                    for (i=0;i<10;i++){
+                    
+                    for (i=0;i<10;i++){ //Update resource table with new values
                         printf(" %i",  resourceTable[simpidofsender][i]);
                         fprintf(fileLogging, " %i",  resourceTable[simpidofsender][i]);
                         resourcesLeft[i] += resourceTable[simpidofsender][i];
@@ -272,28 +261,27 @@ int main(int argc, char *argv[]){
                 i++;
             }
             //Create resource header
-                printf("\t");
-                fprintf(fileLogging, "\t");
-                for(i=0;i<10;i++){
-                    printf("2R%i\t", i);
-                    fprintf(fileLogging, "R%i\t", i);
+            printf("\t");
+            fprintf(fileLogging, "\t");
+            for(i=0;i<10;i++){
+                printf("2R%i\t", i);
+                fprintf(fileLogging, "R%i\t", i);
+            }
+            printf("\n");
+            fprintf(fileLogging, "\n");
+
+            for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
+                printf("P%i\t", i);
+                fprintf(fileLogging, "P%i\t", i);
+                for(j = 0; j < 10; j++){
+                    printf("%i\t", resourceTable[i][j]);
+                    fprintf(fileLogging, "%i\t", resourceTable[i][j]);
                 }
                 printf("\n");
                 fprintf(fileLogging, "\n");
-
-                //Print resource table and max processes on the side
-                for(i = 0; i < 18; i++){
-                    printf("P%i\t", i);
-                    fprintf(fileLogging, "P%i\t", i);
-                    for(j = 0; j < 10; j++){
-                        printf("%i\t", resourceTable[i][j]);
-                        fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-                    }
-                    printf("\n");
-                    fprintf(fileLogging, "\n");
-                }
+            }
         }
-        if(checkWhatToDo > 0){
+        if(checkWhatToDo > 0){ //------------------------------------------------------------------------------------------------------------------
             printf("Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData);
             fprintf(fileLogging, "Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData); 
 
@@ -314,23 +302,20 @@ int main(int argc, char *argv[]){
                 i++;
             }
 
-            //Check if we have enough resources for this process
-            for(i=0;i<10;i++){
+            for(i=0;i<10;i++){ //Check if we have enough resources for this process
                 if((resourcesLeft[i] - resourcesUsed[i]) < 0){
                     notenoughresources = true;
                 }
             }
 
             if(!notenoughresources){
-                //send message back to child that there are enough resources
-                strcpy(buf.strData, "1");
+                strcpy(buf.strData, "1"); //send message back to child that there are enough resources
                 buf.mtype = buf.intData;
                 printf("There are enough resources for child  %i\n", buf.intData); 
                 fprintf(fileLogging, "There are enough resources for child  %i\n", buf.intData); 
                 if (msgsnd(msqid, &buf, sizeof(msgbuffer)-sizeof(long), 0) == -1) { perror("msgsnd to child 1 failed\n"); exit(1); } 
 
-                //Update resource table with new values
-                for (i=0;i<10;i++){
+                for (i=0;i<10;i++){ //Update resource table with new values
                     resourceTable[simpidofsender][i] = resourcesUsed[i];
                     resourcesLeft[i] -= resourcesUsed[i];
                 }
@@ -345,8 +330,7 @@ int main(int argc, char *argv[]){
                 printf("\n");
                 fprintf(fileLogging, "\n");
 
-                //Print resource table and max processes on the side
-                for(i = 0; i < 18; i++){
+                for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
                     printf("P%i\t", i);
                     fprintf(fileLogging, "P%i\t", i);
                     for(j = 0; j < 10; j++){
@@ -356,8 +340,8 @@ int main(int argc, char *argv[]){
                     printf("\n");
                     fprintf(fileLogging, "\n");
                 }
-            }else{  //If notenough is true
-                //send to blocked queue, should hold the pid of the process that is blocked and the rescoruces it is reuqesating, first in first out
+            }else{  //If not enough is true
+                //send to blocked queue, should hold the pid of the process that is blocked and the rescoruces it is requesting, first in first out
                 printf("There are not enough resources for child %d, sent to blocked queue\n", buf.intData);
                 fprintf(fileLogging, "There are not enough resources for child %d, sent to blocked queue\n", buf.intData);
                 toInsert.pid = buf.intData;
@@ -369,7 +353,7 @@ int main(int argc, char *argv[]){
             notenoughresources = false;
         }
 
-        if(!isEmpty()){ //Is blocked queue empty?
+        if(!isEmpty()){ //Is blocked queue empty? -------------------------------------------------------------------------------------------------
             toInsert = peek();
             for (i=0;i<10;i++){
                 resourcesUsed[i] = toInsert.resources[i];
@@ -379,22 +363,19 @@ int main(int argc, char *argv[]){
                 printf("There are now enough resources for %i to come out of the blocked queue\n", toInsert.pid);
                 fprintf(fileLogging, "There are now enough resources for %i to come out of the blocked queue\n", toInsert.pid);
                 removeData(); //Delete process from front of queue
-                //send message back to child that there are enough resources
-                strcpy(buf.strData, "1");
+                strcpy(buf.strData, "1"); //send message back to child that there are enough resources
                 buf.mtype = toInsert.pid;
                 buf.intData = toInsert.pid;
                 printf("Child %d is granted the following resources: %s\n", buf.intData, buf.strData); //TESTING
                 fprintf(fileLogging, "Child %d is granted the following resources: %s\n", buf.intData, buf.strData); //TESTING
                 if (msgsnd(msqid, &buf, sizeof(msgbuffer)-sizeof(long), 0) == -1) { perror("msgsnd to child 1 failed\n"); exit(1); } 
 
-                //Update resource table with new values
-                for (i=0;i<10;i++){
+                for (i=0;i<10;i++){ //Update resource table with new values
                     resourceTable[simpidofsender][i] = resourcesUsed[i];
                     resourcesLeft[i] -= resourcesUsed[i];
                 }
 
-                //Print resource table and max processes on the side
-                for(i = 0; i < 18; i++){
+                for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
                     printf("P%i\t", i);
                     fprintf(fileLogging, "P%i\t", i);
                     for(j = 0; j < 10; j++){
@@ -418,8 +399,7 @@ int main(int argc, char *argv[]){
             }
         }
         
-       //Ending if passed 5 seconds and hit maximum children
-        //if(allResourcesFree && isEmpty() && numofchild > 1 && currentTime > 5){
+        //Ending if passed 5 seconds and hit maximum children
         if((allResourcesFree && isEmpty()) && (numofchild > 40 || currentTime > 5)){
             printf("Ending Program!");
             fprintf(fileLogging, "Ending Program!");
@@ -427,7 +407,11 @@ int main(int argc, char *argv[]){
         }else{
             allResourcesFree = false;
         }
-    }  
+    }  //-----------------------------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+
 
     printf(" Waiting for the child to end its own life\n");
     fprintf(fileLogging, " Waiting for the child to end its own life\n");
@@ -443,8 +427,7 @@ int main(int argc, char *argv[]){
     printf("\n");
     fprintf(fileLogging, "\n");
 
-    //Print deallocated resource table and max processes last time
-    for(i = 0; i < 18; i++){
+    for(i = 0; i < 18; i++){ //Print deallocated resource table and max processes last time
         printf("P%i\t", i);
         fprintf(fileLogging, "P%i\t", i);
         for(j = 0; j < 10; j++){
