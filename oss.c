@@ -22,6 +22,7 @@ typedef struct queue {
 } queue;
 
 void printTable(int resourceTable[][10]){
+    int i,j;
     printf("------------------------------------------------------------");
     for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
         printf("P%i\t", i);
