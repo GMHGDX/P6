@@ -131,27 +131,7 @@ int main(int argc, char *argv[]){
         }
     }
 
-    //Create resource header
-    printf("\t");
-    fprintf(fileLogging, "\t");
-    for(i=0;i<10;i++){
-        printf("1R%i\t", i);
-        fprintf(fileLogging, "R%i\t", i);
-    }
-    printf("\n");
-    fprintf(fileLogging, "\n");
-
-    //Print resource table and max processes on the side
-    for(i = 0; i < 18; i++){
-        printf("P%i\t", i);
-        fprintf(fileLogging, "P%i\t", i);
-        for(j = 0; j < 10; j++){
-            printf("%i\t", resourceTable[i][j]);
-            fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-        }
-        printf("\n");
-        fprintf(fileLogging, "\n");
-    }
+    printTable(resourceTable);
 
     //Create message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
