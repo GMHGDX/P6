@@ -21,6 +21,20 @@ typedef struct queue {
     int resources[10];
 } queue;
 
+void printTable(int resourceTable[][10]){
+    printf("------------------------------------------------------------");
+    for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
+        printf("P%i\t", i);
+        //fprintf(fileLogging, "P%i\t", i);
+        for(j = 0; j < 10; j++){
+            printf("%i\t", resourceTable[i][j]);
+            //fprintf(fileLogging, "%i\t", resourceTable[i][j]);
+        }
+        printf("\n");
+        //fprintf(fileLogging, "\n");
+    }
+}
+
 #define MAX 40
 
 queue blockedQueue[MAX];
@@ -33,7 +47,6 @@ bool isEmpty() { return itemCount == 0; }
 bool isFull() { return itemCount == MAX; }
 int size() { return itemCount; }  
 
-void printResourcetable(int resourceTable[][10]);
 
 void insert(queue data) {
    if(!isFull()) {
@@ -374,17 +387,18 @@ int main(int argc, char *argv[]){
                     resourceTable[simpidofsender][i] = resourcesUsed[i];
                     resourcesLeft[i] -= resourcesUsed[i];
                 }
-
-                for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-                    printf("P%i\t", i);
-                    fprintf(fileLogging, "P%i\t", i);
-                    for(j = 0; j < 10; j++){
-                        printf("%i\t", resourceTable[i][j]);
-                        fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-                    }
-                    printf("\n");
-                    fprintf(fileLogging, "\n");
-                }
+                
+                printTable();
+                // for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
+                //     printf("P%i\t", i);
+                //     fprintf(fileLogging, "P%i\t", i);
+                //     for(j = 0; j < 10; j++){
+                //         printf("%i\t", resourceTable[i][j]);
+                //         fprintf(fileLogging, "%i\t", resourceTable[i][j]);
+                //     }
+                //     printf("\n");
+                //     fprintf(fileLogging, "\n");
+                // }
             }
             notenoughresources = false;
         }
