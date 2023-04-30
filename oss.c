@@ -465,6 +465,14 @@ int main(int argc, char *argv[]){
 void printTable(int resourceTable[][10]){
     int i,j;
     printf("------------------------------------------------------------");
+    printf("\t");
+    //fprintf(fileLogging, "\t");
+    for(i=0;i<10;i++){
+        printf("3R%i\t", i);
+        //fprintf(fileLogging, "R%i\t", i);
+    }
+    printf("\n");
+    //fprintf(fileLogging, "\n");
     for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
         printf("P%i\t", i);
         //fprintf(fileLogging, "P%i\t", i);
