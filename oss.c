@@ -261,26 +261,7 @@ int main(int argc, char *argv[]){
                 }
                 i++;
             }
-            //Create resource header
-            printf("\t");
-            fprintf(fileLogging, "\t");
-            for(i=0;i<10;i++){
-                printf("2R%i\t", i);
-                fprintf(fileLogging, "R%i\t", i);
-            }
-            printf("\n");
-            fprintf(fileLogging, "\n");
-
-            for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-                printf("P%i\t", i);
-                fprintf(fileLogging, "P%i\t", i);
-                for(j = 0; j < 10; j++){
-                    printf("%i\t", resourceTable[i][j]);
-                    fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-                }
-                printf("\n");
-                fprintf(fileLogging, "\n");
-            }
+            printTable(resourceTable);
         }
         if(checkWhatToDo > 0){ //------------------------------------------------------------------------------------------------------------------
             printf("Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData);
@@ -322,7 +303,7 @@ int main(int argc, char *argv[]){
                 }
 
             printTable(resourceTable);
-            
+
             }else{  //If not enough is true
                 //send to blocked queue, should hold the pid of the process that is blocked and the rescoruces it is requesting, first in first out
                 printf("There are not enough resources for child %d, sent to blocked queue\n", buf.intData);
