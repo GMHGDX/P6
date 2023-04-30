@@ -389,7 +389,7 @@ int main(int argc, char *argv[]){
                     resourcesLeft[i] -= resourcesUsed[i];
                 }
                 
-                printTable();
+                printTable(resourceTable);
                 // for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
                 //     printf("P%i\t", i);
                 //     fprintf(fileLogging, "P%i\t", i);
