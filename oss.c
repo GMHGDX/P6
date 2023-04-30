@@ -21,20 +21,7 @@ typedef struct queue {
     int resources[10];
 } queue;
 
-void printTable(int resourceTable[][10]){
-    int i,j;
-    printf("------------------------------------------------------------");
-    for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-        printf("P%i\t", i);
-        //fprintf(fileLogging, "P%i\t", i);
-        for(j = 0; j < 10; j++){
-            printf("%i\t", resourceTable[i][j]);
-            //fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-        }
-        printf("\n");
-        //fprintf(fileLogging, "\n");
-    }
-}
+void printTable(int resourceTable[][10]);
 
 #define MAX 40
 
@@ -473,4 +460,19 @@ int main(int argc, char *argv[]){
     fclose(fileLogging); //close the log file
 
     return 0;
+}
+
+void printTable(int resourceTable[][10]){
+    int i,j;
+    printf("------------------------------------------------------------");
+    for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
+        printf("P%i\t", i);
+        //fprintf(fileLogging, "P%i\t", i);
+        for(j = 0; j < 10; j++){
+            printf("%i\t", resourceTable[i][j]);
+            //fprintf(fileLogging, "%i\t", resourceTable[i][j]);
+        }
+        printf("\n");
+        //fprintf(fileLogging, "\n");
+    }
 }
