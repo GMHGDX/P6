@@ -408,26 +408,7 @@ int main(int argc, char *argv[]){
     fprintf(fileLogging, " Waiting for the child to end its own life\n");
     wait(0); //wait for child to finish in user_proc
 
-    //Create resource header
-    printf("\t");
-    fprintf(fileLogging, "\t");
-    for(i=0;i<10;i++){
-        printf("4R%i\t", i);
-        fprintf(fileLogging, "R%i\t", i);
-    }
-    printf("\n");
-    fprintf(fileLogging, "\n");
-
-    for(i = 0; i < 18; i++){ //Print deallocated resource table and max processes last time
-        printf("P%i\t", i);
-        fprintf(fileLogging, "P%i\t", i);
-        for(j = 0; j < 10; j++){
-            printf("%i\t", resourceTable[i][j]);
-            fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-        }
-        printf("\n");
-        fprintf(fileLogging, "\n");
-    }
+    printTable(resourceTable);
 
     printf("RescouresLeft: ");
     fprintf(fileLogging, "RescouresLeft: ");
