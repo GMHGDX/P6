@@ -130,28 +130,7 @@ int main(int argc, char *argv[]){
             resourceTable[i][j] = 0;
         }
     }
-
-    //Create resource header
-    printf("\t");
-    fprintf(fileLogging, "\t");
-    for(i=0;i<10;i++){
-        printf("1R%i\t", i);
-        fprintf(fileLogging, "R%i\t", i);
-    }
-    printf("\n");
-    fprintf(fileLogging, "\n");
-
-    //Print resource table and max processes on the side
-    for(i = 0; i < 18; i++){
-        printf("P%i\t", i);
-        fprintf(fileLogging, "P%i\t", i);
-        for(j = 0; j < 10; j++){
-            printf("%i\t", resourceTable[i][j]);
-            fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-        }
-        printf("\n");
-        fprintf(fileLogging, "\n");
-    }
+    printTable(resourceTable);
 
     //Create message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
@@ -261,25 +240,7 @@ int main(int argc, char *argv[]){
                 }
                 i++;
             }
-            //Create resource header
-            printf("\t");
-            fprintf(fileLogging, "\t");
-            for(i=0;i<10;i++){
-                printf("2R%i\t", i);
-                fprintf(fileLogging, "R%i\t", i);
-            }
-            printf("\n");
-            fprintf(fileLogging, "\n");
-
-            for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-                printf("P%i\t", i);
-                fprintf(fileLogging, "P%i\t", i);
-                for(j = 0; j < 10; j++){
-                    printf("%i\t", resourceTable[i][j]);
-                    fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-                }
-                printf("\n");
-                fprintf(fileLogging, "\n");
+            printTable(resourceTable);
             }
         }
         if(checkWhatToDo > 0){ //------------------------------------------------------------------------------------------------------------------
@@ -321,25 +282,7 @@ int main(int argc, char *argv[]){
                     resourcesLeft[i] -= resourcesUsed[i];
                 }
 
-                //Create resource header
-                printf("\t");
-                fprintf(fileLogging, "\t");
-                for(i=0;i<10;i++){
-                    printf("3R%i\t", i);
-                    fprintf(fileLogging, "R%i\t", i);
-                }
-                printf("\n");
-                fprintf(fileLogging, "\n");
-
-                for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-                    printf("P%i\t", i);
-                    fprintf(fileLogging, "P%i\t", i);
-                    for(j = 0; j < 10; j++){
-                        printf("%i\t", resourceTable[i][j]);
-                        fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-                    }
-                    printf("\n");
-                    fprintf(fileLogging, "\n");
+                printTable(resourceTable);
                 }
             }else{  //If not enough is true
                 //send to blocked queue, should hold the pid of the process that is blocked and the rescoruces it is requesting, first in first out
@@ -375,18 +318,7 @@ int main(int argc, char *argv[]){
                     resourceTable[simpidofsender][i] = resourcesUsed[i];
                     resourcesLeft[i] -= resourcesUsed[i];
                 }
-                
-                printTable(resourceTable);
-                // for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-                //     printf("P%i\t", i);
-                //     fprintf(fileLogging, "P%i\t", i);
-                //     for(j = 0; j < 10; j++){
-                //         printf("%i\t", resourceTable[i][j]);
-                //         fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-                //     }
-                //     printf("\n");
-                //     fprintf(fileLogging, "\n");
-                // }
+                printTable(resourceTable); //print resource table
             }
             notenoughresources = false;
         }
@@ -419,26 +351,7 @@ int main(int argc, char *argv[]){
     fprintf(fileLogging, " Waiting for the child to end its own life\n");
     wait(0); //wait for child to finish in user_proc
 
-    //Create resource header
-    printf("\t");
-    fprintf(fileLogging, "\t");
-    for(i=0;i<10;i++){
-        printf("4R%i\t", i);
-        fprintf(fileLogging, "R%i\t", i);
-    }
-    printf("\n");
-    fprintf(fileLogging, "\n");
-
-    for(i = 0; i < 18; i++){ //Print deallocated resource table and max processes last time
-        printf("P%i\t", i);
-        fprintf(fileLogging, "P%i\t", i);
-        for(j = 0; j < 10; j++){
-            printf("%i\t", resourceTable[i][j]);
-            fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-        }
-        printf("\n");
-        fprintf(fileLogging, "\n");
-    }
+    printTable(resourceTable);
 
     printf("RescouresLeft: ");
     fprintf(fileLogging, "RescouresLeft: ");
