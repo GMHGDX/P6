@@ -156,7 +156,7 @@ int main(int argc, char *argv[]){
 
         strcpy(buf.strData, "1");
         buf.intData = getpid();
-        buf.mtype = (long)getpid();
+        buf.mtype = childpid;
         printf("OSS - The buf.str data: %s\n", buf.strData);
         if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
         sleep(10);
