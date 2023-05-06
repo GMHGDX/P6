@@ -16,7 +16,6 @@ int main(int argc, char *argv[]){
     int randomOffset;
     int page;
     int readWrite;
-    int child = 0;
     int checkResponse;
 
     srand(time(0) + getpid()); //seed for random number generator
@@ -85,17 +84,17 @@ int main(int argc, char *argv[]){
     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
 
     //Recieve message back from oss on when child should terminate
-    while(child == 0){
+    while(1){
         if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
         {
-             perror("2 failed to receive message from parent\n"); 
-             exit(1);
+            perror("2 failed to receive message from parent\n"); 
+            exit(1);
         }
         checkResponse = atoi(buf.strData);
 
         if(checkResponse == 1){
-            child++;
             printf("Worker - Child is terminating!\n");
+            break;
         }
     }
     return 0;
