@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
 
     //intialize values for use in while loop
     double currentTime; //time going into shared memory
-    double limitReach; //random time next child is forked 
+    double limitReach = 0; //random time next child is forked 
     double writeToMem;
     int numofchild = 0;
     int milliSec = 0; //milliseconds used in time limit
