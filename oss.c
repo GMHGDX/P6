@@ -146,7 +146,6 @@ int main(int argc, char *argv[]){
             if(seperate == 2){
                 readWrite = atoi(procChoice); //assign nanosecond as an integer
                 procChoice = strtok(NULL, " ");
-                break;
             }
             if(seperate == 3){
                 page = atoi(procChoice); //assign nanosecond as an integer
@@ -155,7 +154,6 @@ int main(int argc, char *argv[]){
             }
             
         }
-        printf("Gab did her loop wrong the last nuber is: %s\n", procChoice);
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
 
         strcpy(buf.strData, "1");
