@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     double readFromMem;
     readFromMem = *shm_ptr;
 
-    printf("Worker - Time from memory: %i", readFromMem);
+    printf("Worker - Time from memory: %lf", readFromMem);
 
     //Create message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
