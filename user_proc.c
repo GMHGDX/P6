@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
     //Connect to message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
     if((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
-    
+
     //get shared memory
     int shm_id = shmget(sh_key, sizeof(double), 0666);
     if(shm_id <= 0) { fprintf(stderr,"CHILD ERROR: Failed to get shared memory, shared memory id = %i\n", shm_id); exit(1); }
@@ -40,24 +40,24 @@ int main(int argc, char *argv[]){
     double readFromMem;
     readFromMem = *shm_ptr;
 
-    printf("Worker - Time from memory: %lf", readFromMem);
+    printf("Worker - Time from memory: %lf\n", readFromMem);
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
 
-    printf("Worker - This is your page number: %i. This is your memory address: %i", page, memoryAddress);
+    printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
 
     //Process chooses if it will read or write (more inclined to read)
     readWrite = randomNumberGenerator(100);
     if(readWrite < 70){
         readWrite = 1; //requesting read
-        printf("Worker - The process is requesting read");
+        printf("Worker - The process is requesting read\n");
 
     } else{
         readWrite = 2; //requesting write
-        printf("Worker - The process is requesting write");
+        printf("Worker - The process is requesting write\n");
     }
     
     //Convert integer to string
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
     strcat(together, permission);
     strcat(together, " ");
     strcat(together, pageNum);
-    printf("Worker - The string together with memory and permission: %s", together);
+    printf("Worker - The string together with memory and permission: %s\n", together);
 
     //send our string to message queue
     strcpy(buf.strData, together); //copy our new string into string data buffer
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
 
         if(checkResponse == 1){
             child++;
-            printf("Worker - Child is terminating!");
+            printf("Worker - Child is terminating!\n");
         }
     }
     return 0;
