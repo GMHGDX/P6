@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
     strcat(together, permission);
     strcat(together, " ");
     strcat(together, pageNum);
-    printf("Worker - The string together with memory and permission: %s\n", together);
+    printf("Worker - The string together with memory, permission, and page number: %s\n", together);
 
     //send our string to message queue
     strcpy(buf.strData, together); //copy our new string into string data buffer

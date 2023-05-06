@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
         }
 
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
-
+        printf("OSS - message recived is : %s\n", buf.strData);
         int seperate = 0;
         int memory;
         int readWrite;
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]){
         //seperate the message by white space and assign it ot page number, memory address, and read/write
         char * procChoice = strtok(buf.strData, " ");
         while( procChoice != NULL ) {
-            printf("message is now: %s", procChoice);
+            printf("message is now: %s\n", procChoice);
             seperate++;
             if(seperate == 1){
                 memory = atoi(procChoice); //assign second as an integer
