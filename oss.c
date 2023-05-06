@@ -135,6 +135,7 @@ int main(int argc, char *argv[]){
 
         //seperate the message by white space and assign it ot page number, memory address, and read/write
         char * procChoice = strtok(buf.strData, " ");
+        printf("OSS - procChoice: %s\n", procChoice);
         while( procChoice != NULL ) {
             printf("message is now: %s\n", procChoice);
             seperate++;
