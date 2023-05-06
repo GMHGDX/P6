@@ -133,7 +133,6 @@ int main(int argc, char *argv[]){
         int readWrite;
         int page;
 
-        prtinf("sepearting message ")
         //seperate the message by white space and assign it ot page number, memory address, and read/write
         char * procChoice = strtok(buf.strData, " ");
         while( procChoice != NULL ) {
