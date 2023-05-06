@@ -24,6 +24,10 @@ int main(int argc, char *argv[]){
     //grab sh_key from oss for shared memory
     int sh_key = atoi(argv[1]);
 
+    //Connect to message queue
+    if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
+    if((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
+    
     //get shared memory
     int shm_id = shmget(sh_key, sizeof(double), 0666);
     if(shm_id <= 0) { fprintf(stderr,"CHILD ERROR: Failed to get shared memory, shared memory id = %i\n", shm_id); exit(1); }
@@ -37,10 +41,6 @@ int main(int argc, char *argv[]){
     readFromMem = *shm_ptr;
 
     printf("Worker - Time from memory: %lf", readFromMem);
-
-    //Create message queue
-    if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
-    if((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32

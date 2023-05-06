@@ -39,6 +39,10 @@ int main(int argc, char *argv[]){
     key_t msqkey;
     int msqid;
     msgbuffer buf;
+    
+    //Create message queue
+    if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
+    if((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
 
     //Parse through command line options
 	char opt;
@@ -121,9 +125,7 @@ int main(int argc, char *argv[]){
                 printf("OSS - Child PID: %ld ", childpid);
             }
         }
-        //Connect to message queue
-        if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
-        if((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
+
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
 
         int seperate = 0;
