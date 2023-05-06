@@ -158,8 +158,9 @@ int main(int argc, char *argv[]){
     char* text; //used to seperate message recieved by whitespace 
     int simpidofsender;
     bool notenoughresources = false;
-    int checkWhatToDo = -1;
+    int pageNumber = -1;
     bool allResourcesFree = false;
+    int randomRW = 2;
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
@@ -210,12 +211,31 @@ int main(int argc, char *argv[]){
 
         buf.intData = 0;
         strcpy(buf.strData, "-1"); //Clear the message string back to nothing before we check for a msgrcv
-        checkWhatToDo = -1; //Return checkwaht todo back to "do nothing"
+        pageNumber = -1; //Return checkwaht todo back to "do nothing"
 
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), IPC_NOWAIT); // receive a message from user_proc, but only one for our PID
-        checkWhatToDo = atoi(buf.strData);  //If 0, means a process has died, if greater than 0, meana we got some reacourses to alloacte
+        pageNumber = atoi(buf.strData);  //If 0, means a process has died, if greater than 0, meana we got some reacourses to alloacte
 
-        if(checkWhatToDo == 0){//-----------------------------------------------------------------------------------------------------------------
+        readWrite = randomNumberGenerator(randomRW);
+        if(readWrite)
+
+    //seperate the message by white space and assign it to seconds and nanoseconds respectively
+    char * text = strtok(msq.mtext, " ");
+        while( text != NULL ) {
+            seperate++;
+            if(seperate == 1){
+                sec = atoi(text); //assign second as an integer
+                text = strtok(NULL, " ");
+            }
+            if(seperate == 2){
+                nanosec = atoi(text); //assign nanosecond as an integer
+                text = strtok(NULL, " ");
+                break;
+            }
+    }
+//////////////////////////////////////////////////////////////////////
+
+        if(pageNumber == 0){//-----------------------------------------------------------------------------------------------------------------
             printf("Dealloacting\n"); //deallocating resources from the process
             fprintf(fileLogging, "Dealloacting\n");
             i = 0;
@@ -243,7 +263,7 @@ int main(int argc, char *argv[]){
             }
             printTable(resourceTable);
         }
-        if(checkWhatToDo > 0){ //------------------------------------------------------------------------------------------------------------------
+        if(pageNumber > 0){ //------------------------------------------------------------------------------------------------------------------
             printf("Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData);
             fprintf(fileLogging, "Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData); 
 

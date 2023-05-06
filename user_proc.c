@@ -12,8 +12,12 @@ int main(int argc, char *argv[]){
     int msqid = 0;
     key_t msqkey;
 
-    int resourceLim = 5;
-    int resourceAsk[10];
+    int memoryAddress;
+    int randomOffset;
+    int page;
+    int readWrite;
+    int child = 0;
+    int checkResponse;
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -32,58 +36,61 @@ int main(int argc, char *argv[]){
     double readFromMem;
     readFromMem = *shm_ptr;
 
-    //message queue
+    //connect to message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //get message queue key used in oss
     if ((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
 
-    //Create a random number for how many instances of each resource the process wants and add it to an array
-    int i;
-    for(i=0;i<10;i++){
-        resourceAsk[i] = randomNumberGenerator(resourceLim); 
-    }
+    //request memory to random page
+    page = randomNumberGenerator(32); //max pages a process can request is 32
+    randomOffset = randomNumberGenerator(1023); //max offset is 1023
+    memoryAddress = (page * 1024) + randomOffset;
 
-    //concatenate all the resources requested by the process in one string
+    printf("This is your page number: %i. This is your memory address: %i", randomPage, memoryAddress);
+
+    //Process chooses if it will read or write (more inclined to read)
+    readWrite = randomNumberGenerator(100);
+    if(readWrite < 70){
+        readWrite = 1; //requesting read
+        printf("the process is requesting read");
+
+    } else{
+        readWrite = 2; //requesting write
+        printf("the process is requesting write");
+    }
+    
+    //Convert integer to string
+    char memory[50];
+    char permission[50];
+    snprintf(memory, sizeof(memory), "%i", memoryAddress);
+    snprintf(permission, sizeof(permission), "%i", readWrite);
+
+    //add seconds and nanoseconds together with a space in between to send as one message
     char *together;
-    char resourceAsk_string[50];
-    together = malloc(strlen(resourceAsk_string)*10 + 1 + 1);
-    
-    //Add random number of resources to one string
-    for(i=0;i<10;i++){
-        snprintf(resourceAsk_string, sizeof(resourceAsk_string), "%i", resourceAsk[i]); //convert integer to char string 
-        if(i == 0){
-            strcpy(together, resourceAsk_string);
-        }else{
-            strcat(together, resourceAsk_string);
-        }
-        if(i < 9){
-            strcat(together, " ");
-        }
-    }
-
-    strcpy(buf.strData, together); //copy our new string into mtext
-
-    //for sending message to the parent
-    buf.intData = getpid();
-    buf.mtype = (long)getppid();
+    together = malloc(strlen(memory) + strlen(permission) + 1 + 1);
+    strcpy(together, memory);
+    strcat(together, " ");
+    strcat(together, permission);
+    printf("The string together with memory and permission: %s", together);
 
     //send our string to message queue
+    strcpy(buf.strData, together); //copy our new string into string data buffer
+    buf.intData = getpid();
+    buf.mtype = (long)getppid();
     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-    if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("1 failed to receive message from parent\n"); exit(1); } // receive a message from oss, but only one for our PID
 
-    int checkResponse = atoi(buf.strData);
-    
-    while(checkResponse != 1){
-        if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
+    //Recieve message back from oss on when child should terminate
+    while(child == 0){
+        if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
+        {
+             perror("2 failed to receive message from parent\n"); 
+             exit(1);
+        }
         checkResponse = atoi(buf.strData);
+
+        if(checkResponse == 1){
+            child++;
+            printf("Child is terminating!");
+        }
     }
-    sleep(1);
-
-    //send our string to message queue
-    strcpy(buf.strData, "0");
-    buf.intData = getpid();
-    buf.mtype = (long)getppid();
-
-    //send last message to let oss know it is terminating
-    if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
     return 0;
 }
