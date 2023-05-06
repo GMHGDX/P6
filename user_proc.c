@@ -46,6 +46,10 @@ int main(int argc, char *argv[]){
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
 
+    if(memoryAddress > 32000){
+        memoryAddress == 32000;
+    }
+
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
 
     //Process chooses if it will read or write (more inclined to read)

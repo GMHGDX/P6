@@ -86,6 +86,7 @@ int main(int argc, char *argv[]){
     double writeToMem;
     int numofchild = 0;
     int milliSec = 0; //milliseconds used in time limit
+    char readWriteStr;
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
@@ -133,9 +134,24 @@ int main(int argc, char *argv[]){
         int readWrite;
         int page;
 
+        // Master: P2 requesting read of address 25237 at time xxx:xxx
+        // Master: Address 25237 in frame 13, giving data to P2 at time xxx:xxx
+        // Master: P5 requesting write of address 12345 at time xxx:xxx
+        // Master: Address 12345 in frame 203, writing data to frame at time xxx:xxx
+        // Master: P2 requesting write of address 03456 at time xxx:xxx
+        // Master: Address 12345 is not in a frame, pagefault
+        // Master: Clearing frame 107 and swapping in p2 page 3
+        // Master: Dirty bit of frame 107 set, adding additional time to the clock
+        // Master: Indicating to P2 that write has happened to address 03456
+        // Current memory layout at time xxx:xxx is:
+        // Occupied DirtyBit HeadOfFIFO
+        // Frame 0: No 0
+        // Frame 1: Yes 1
+        // Frame 2: Yes 0 *
+        // Frame 3: Yes 1
+
         //seperate the message by white space and assign it ot page number, memory address, and read/write
         char * procChoice = strtok(buf.strData, " ");
-        printf("OSS - procChoice: %s\n", procChoice);
         while( procChoice != NULL ) {
             printf("message is now: %s\n", procChoice);
             seperate++;
@@ -151,9 +167,16 @@ int main(int argc, char *argv[]){
                 page = atoi(procChoice); //assign nanosecond as an integer
                 procChoice = strtok(NULL, " ");
                 break;
-            }
-            
+            }   
         }
+        if(readWrite == 1){ //assign read string
+            readWriteStr = "read";
+        }
+        if(readWrite == 2){ //assign write string
+            readWriteStr = "write";
+        }
+        printf("OSS: PID %ld requesting %s of address %i at time %lf\n",childpid, readWriteStr, memory, currentTime);
+
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
 
         strcpy(buf.strData, "1");

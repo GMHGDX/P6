@@ -54,14 +54,11 @@ int R0, R1, R2, R3, R4, R5, R6, R7, R8, R9 = 20;
 
 double currentTime;
 
-
 //Create random second and nanosecond in bound of user input
 int randomNumberGenerator(int limit)
 {
     int sec;
-
     sec = (rand() % (limit)) + 1;
-
     return sec;
 }
 
