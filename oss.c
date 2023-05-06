@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
         writeToMem = currentTime;
         *shm_ptr = writeToMem;
 
-        if(numofchild < 1){ //launch only one child for now
+        if(numofchild < 1 ){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
@@ -151,9 +151,7 @@ int main(int argc, char *argv[]){
             }
         }
          printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n",page,readWrite,memory);
-        char one[1];
-        int numOne = 1;
-        strcpy(one, memory);
+        char one = "1";
          buf.strData = one; //send message to process to terminate
          buf.intData = getpid();
          buf.mtype = (long)getppid();
