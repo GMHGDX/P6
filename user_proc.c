@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
     char pageNum[50];
     snprintf(memory, sizeof(memory), "%i", memoryAddress);
     snprintf(permission, sizeof(permission), "%i", readWrite);
-    snprintf(pageNum, sizeof(pageNum), "%i", readWrite);
+    snprintf(pageNum, sizeof(pageNum), "%i", page);
 
     //add seconds and nanoseconds together with a space in between to send as one message
     char *together;

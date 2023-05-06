@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
     key_t msqkey;
     int msqid;
     msgbuffer buf;
-    
+
     //Create message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
     if((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
@@ -157,11 +157,11 @@ int main(int argc, char *argv[]){
          buf.intData = getpid();
          buf.mtype = (long)getppid();
          if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-
+            sleep(10);
          break;
     }
     //remove this and below
-    printf("deleting memory");
+    printf("deleting memory\n");
     shmdt( shm_ptr ); // Detach from the shared memory segment
     shmctl( shm_id, IPC_RMID, NULL ); // Free shared memory segment shm_id 
 
