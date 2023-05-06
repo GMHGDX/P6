@@ -151,9 +151,9 @@ int main(int argc, char *argv[]){
             }
         }
          printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n",page,readWrite,memory);
-        char one[2];
+        char one[1];
         int numOne = 1;
-        snprintf(one, sizeof(one), "%i", numOne);
+        strcpy(one, memory);
          buf.strData = one; //send message to process to terminate
          buf.intData = getpid();
          buf.mtype = (long)getppid();
