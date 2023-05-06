@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
     double writeToMem;
     int numofchild = 0;
     int milliSec = 0; //milliseconds used in time limit
-    char readWriteStr[];
+    char readWriteStr[10];
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
