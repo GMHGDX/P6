@@ -170,10 +170,10 @@ int main(int argc, char *argv[]){
             }   
         }
         if(readWrite == 1){ //assign read string
-            readWriteStr = "read";
+            strcpy(readWriteStr, "read");
         }
         if(readWrite == 2){ //assign write string
-            readWriteStr = "write";
+            strcpy(readWriteStr, "write");
         }
         printf("OSS: PID %ld requesting %s of address %i at time %lf\n",childpid, readWriteStr, memory, currentTime);
 
