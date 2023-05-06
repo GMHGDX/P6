@@ -153,8 +153,9 @@ int main(int argc, char *argv[]){
                 procChoice = strtok(NULL, " ");
                 break;
             }
-            printf("Gab did her loop wrong the last nuber is: %s\n", procChoice);
+            
         }
+        printf("Gab did her loop wrong the last nuber is: %s\n", procChoice);
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
 
         strcpy(buf.strData, "1");
