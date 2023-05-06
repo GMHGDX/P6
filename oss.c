@@ -21,63 +21,10 @@ typedef struct queue {
     int resources[10];
 } queue;
 
-void printTable(int resourceTable[][10]);
-
-#define MAX 40
-
-queue blockedQueue[MAX];
-int front = 0;
-int rear = -1;
-int itemCount = 0;
-
-queue peek() { return blockedQueue[front]; }
-bool isEmpty() { return itemCount == 0; }
-bool isFull() { return itemCount == MAX; }
-int size() { return itemCount; }  
-
-
-void insert(queue data) {
-   if(!isFull()) {
-      if(rear == MAX-1) {
-        rear = -1;            
-      }
-      rear++;
-      int i;
-      for(i=0;i<10;i++){
-        blockedQueue[rear].resources[i] = data.resources[i];
-      }
-      blockedQueue[rear].pid = data.pid;
-      itemCount++;
-   }
-}
-
-queue removeData() {
-   queue data = blockedQueue[front++];
-   if(front == MAX) {
-      front = 0;
-   }
-   itemCount--;
-   return data;  
-}
-
-typedef struct pidstruct {
-    pid_t realpid;
-    int simpid;
-} pidstruct;
-
 int main(int argc, char *argv[]){
-    int i;
-    int j;
-
-    queue toInsert; //insert numbers to blocked queue struct
     char* logFile = "logfile"; //logfile declaration
     FILE *fileLogging; //for the file 
     pid_t childpid = 0; //child process ID 
-    int resourceTable[18][10]; //Initialize resource table
-    int resourcesLeft[10];
-    pidstruct mypidstruct[50];
-
-    for(i=0;i<50;i++){ mypidstruct[i].simpid = -1;} //initialize wsimulated PID
 
     srand(time(0)); //Seed the random number generator
 
@@ -116,26 +63,7 @@ int main(int argc, char *argv[]){
             return (EXIT_FAILURE);
         }
     }
-
     fileLogging = fopen(logFile, "w+"); //Open the log file before input begins 
-
-    //Initialize empty resources left (all zeros)
-    for(i = 0; i < 10; i++){
-        resourcesLeft[i] = 20;
-    }
-
-    //Initialize empty resource table (all zeros)
-    for(i = 0; i < 18; i++){
-        for(j = 0; j < 10; j++){
-            resourceTable[i][j] = 0;
-        }
-    }
-
-    printTable(resourceTable);
-
-    //Create message queue
-    if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
-    if ((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
 
     //create shared memory
     int shm_id = shmget(sh_key, sizeof(double), IPC_CREAT | 0666);
@@ -152,15 +80,8 @@ int main(int argc, char *argv[]){
     double currentTime; //time going into shared memory
     double limitReach = 0; //random time next child is forked 
     double writeToMem;
-    int numofchild = 0; //DELETEEEEEEEEE
+    int numofchild = 0;
     int milliSec = 0; //milliseconds used in time limit
-    int resourcesUsed[10]; //resources in an array
-    char* text; //used to seperate message recieved by whitespace 
-    int simpidofsender;
-    bool notenoughresources = false;
-    int pageNumber = -1;
-    bool allResourcesFree = false;
-    int randomRW = 2;
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
@@ -179,7 +100,7 @@ int main(int argc, char *argv[]){
         writeToMem = currentTime;
         *shm_ptr = writeToMem;
 
-        if(limitReach <= currentTime && numofchild < 10 && currentTime <= 5){
+        if(numofchild < 1){ //launch only one child for now
             numofchild++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
@@ -197,193 +118,49 @@ int main(int argc, char *argv[]){
                 return 1;
             }
             if(childpid != 0 ){               
-                i = 0;  //Finds the smallest positoin to put the new child into (cannot be over 17 or it will break our code)
-                while(mypidstruct[i].simpid != -1){
-                    i++;
-                }
-                if(i>17){
-                    printf(" "); //should not get here..
-                }
-                mypidstruct[i].simpid = i;
-                mypidstruct[i].realpid = childpid;
+                printf("OSS - Child PID: %ld ", childpid)
             }
         }
+        //Connect to message queue
+        if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
+        if((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
+        msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
 
-        buf.intData = 0;
-        strcpy(buf.strData, "-1"); //Clear the message string back to nothing before we check for a msgrcv
-        pageNumber = -1; //Return checkwaht todo back to "do nothing"
+        int seperate = 0;
+        int memory;
+        int readWrite;
+        int page;
 
-        msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), IPC_NOWAIT); // receive a message from user_proc, but only one for our PID
-        pageNumber = atoi(buf.strData);  //If 0, means a process has died, if greater than 0, meana we got some reacourses to alloacte
-
-        readWrite = randomNumberGenerator(randomRW);
-        if(readWrite)
-
-    //seperate the message by white space and assign it to seconds and nanoseconds respectively
-    char * text = strtok(msq.mtext, " ");
-        while( text != NULL ) {
+        //seperate the message by white space and assign it to seconds and nanoseconds respectively
+        char * procChoice = strtok(buf.strData, " ");
+        while( procChoice != NULL ) {
             seperate++;
             if(seperate == 1){
-                sec = atoi(text); //assign second as an integer
-                text = strtok(NULL, " ");
+                memory = atoi(procChoice); //assign second as an integer
+                procChoice = strtok(NULL, " ");
             }
             if(seperate == 2){
-                nanosec = atoi(text); //assign nanosecond as an integer
-                text = strtok(NULL, " ");
+                readWrite = atoi(procChoice); //assign nanosecond as an integer
+                procChoice = strtok(NULL, " ");
                 break;
             }
+            if(seperate == 3){
+                page = atoi(procChoice); //assign nanosecond as an integer
+                procChoice = strtok(NULL, " ");
+                break;
+            }
+        }
+         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n",page,readWrite,memory);
+
+         buf.strData = 1; //send message to process to terminate
+         buf.intData = getpid();
+         buf.mtype = (long)getppid();
+         if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+
+         break;
     }
-//////////////////////////////////////////////////////////////////////
-
-        if(pageNumber == 0){//-----------------------------------------------------------------------------------------------------------------
-            printf("Dealloacting\n"); //deallocating resources from the process
-            fprintf(fileLogging, "Dealloacting\n");
-            i = 0;
-            while(i < 18){
-                if(mypidstruct[i].realpid == buf.intData){ 
-                    simpidofsender = mypidstruct[i].simpid;
-
-                    mypidstruct[i].realpid = 0; //Clear out the position in mypidstruct for reuse
-                    mypidstruct[i].simpid = -1;
-
-                    printf("Resources deallocated: ");
-                    fprintf(fileLogging, "Resources deallocated: ");
-                    
-                    for (i=0;i<10;i++){ //Update resource table with new values
-                        printf(" %i",  resourceTable[simpidofsender][i]);
-                        fprintf(fileLogging, " %i",  resourceTable[simpidofsender][i]);
-                        resourcesLeft[i] += resourceTable[simpidofsender][i];
-                        resourceTable[simpidofsender][i] = 0;
-                    }
-                    printf("\n");
-                    fprintf(fileLogging, "\n");
-                    i = 20;
-                }
-                i++;
-            }
-            printTable(resourceTable);
-        }
-        if(pageNumber > 0){ //------------------------------------------------------------------------------------------------------------------
-            printf("Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData);
-            fprintf(fileLogging, "Child %d is requesting the following resourceses: %s\n",buf.intData, buf.strData); 
-
-            text = strtok(buf.strData, " ");
-            for (i=0;i<10;i++){
-                if(text == NULL){
-                    break;
-                }
-                resourcesUsed[i] = atoi(text);
-                text = strtok(NULL, " ");
-            }
-            i = 0;
-            while(i < 18){
-                if(mypidstruct[i].realpid == buf.intData){  //Will thius crash if mypidstruct[i].realpid is not set to anything (unitalized)
-                    simpidofsender = mypidstruct[i].simpid;
-                    break;
-                }
-                i++;
-            }
-
-            for(i=0;i<10;i++){ //Check if we have enough resources for this process
-                if((resourcesLeft[i] - resourcesUsed[i]) < 0){
-                    notenoughresources = true;
-                }
-            }
-
-            if(!notenoughresources){
-                strcpy(buf.strData, "1"); //send message back to child that there are enough resources
-                buf.mtype = buf.intData;
-                printf("There are enough resources for child  %i\n", buf.intData); 
-                fprintf(fileLogging, "There are enough resources for child  %i\n", buf.intData); 
-                if (msgsnd(msqid, &buf, sizeof(msgbuffer)-sizeof(long), 0) == -1) { perror("msgsnd to child 1 failed\n"); exit(1); } 
-
-                for (i=0;i<10;i++){ //Update resource table with new values
-                    resourceTable[simpidofsender][i] = resourcesUsed[i];
-                    resourcesLeft[i] -= resourcesUsed[i];
-                }
-
-            printTable(resourceTable);
-
-            }else{  //If not enough is true
-                //send to blocked queue, should hold the pid of the process that is blocked and the rescoruces it is requesting, first in first out
-                printf("There are not enough resources for child %d, sent to blocked queue\n", buf.intData);
-                fprintf(fileLogging, "There are not enough resources for child %d, sent to blocked queue\n", buf.intData);
-                toInsert.pid = buf.intData;
-                for(i=0;i<10;i++){
-                    toInsert.resources[i] = resourcesUsed[i];
-                }
-                insert(toInsert);
-            } 
-            notenoughresources = false;
-        }
-
-        if(!isEmpty()){ //Is blocked queue empty? -------------------------------------------------------------------------------------------------
-            toInsert = peek();
-            for (i=0;i<10;i++){
-                resourcesUsed[i] = toInsert.resources[i];
-            }
-
-            if(!notenoughresources){
-                printf("There are now enough resources for %i to come out of the blocked queue\n", toInsert.pid);
-                fprintf(fileLogging, "There are now enough resources for %i to come out of the blocked queue\n", toInsert.pid);
-                removeData(); //Delete process from front of queue
-                strcpy(buf.strData, "1"); //send message back to child that there are enough resources
-                buf.mtype = toInsert.pid;
-                buf.intData = toInsert.pid;
-                printf("Child %d is granted the following resources: %s\n", buf.intData, buf.strData); //TESTING
-                fprintf(fileLogging, "Child %d is granted the following resources: %s\n", buf.intData, buf.strData); //TESTING
-                if (msgsnd(msqid, &buf, sizeof(msgbuffer)-sizeof(long), 0) == -1) { perror("msgsnd to child 1 failed\n"); exit(1); } 
-
-                for (i=0;i<10;i++){ //Update resource table with new values
-                    resourceTable[simpidofsender][i] = resourcesUsed[i];
-                    resourcesLeft[i] -= resourcesUsed[i];
-                }
-                printTable(resourceTable);
-            }
-            notenoughresources = false;
-        }
-        
-        for(i=0;i<10;i++){ //detecting if all resources are deallocated for all processes
-            if(resourcesLeft[i] != 20){
-                allResourcesFree = false;
-                break; 
-            }
-            if(i == 9 && resourcesLeft[i] == 20){
-                allResourcesFree = true;
-            }
-        }
-        
-        //Ending if passed 5 seconds and hit maximum children
-        if((allResourcesFree && isEmpty()) && (numofchild > 40 || currentTime > 5)){
-            printf("Ending Program!");
-            fprintf(fileLogging, "Ending Program!");
-            break; //end program
-        }else{
-            allResourcesFree = false;
-        }
-    }  //-----------------------------------------------------------------------------------------------------------------------------------------
-    //-----------------------------------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------------------------------
-
-
-    printf(" Waiting for the child to end its own life\n");
-    fprintf(fileLogging, " Waiting for the child to end its own life\n");
-    wait(0); //wait for child to finish in user_proc
-
-    printTable(resourceTable);
-
-    printf("RescouresLeft: ");
-    fprintf(fileLogging, "RescouresLeft: ");
-    for(i=0;i<10;i++){
-        printf(" %i", resourcesLeft[i]);
-        fprintf(fileLogging, " %i", resourcesLeft[i]);
-    }
-    printf("\n");
-    fprintf(fileLogging, "\n");
-
+    //remove this and below
     printf("deleting memory");
-    fprintf(fileLogging, "deleting memory");
     shmdt( shm_ptr ); // Detach from the shared memory segment
     shmctl( shm_id, IPC_RMID, NULL ); // Free shared memory segment shm_id 
 
@@ -391,29 +168,5 @@ int main(int argc, char *argv[]){
     if (msgctl(msqid, IPC_RMID, NULL) == -1) { perror("msgctl"); return EXIT_FAILURE; }
 
     fclose(fileLogging); //close the log file
-
     return 0;
-}
-
-void printTable(int resourceTable[][10]){
-    int i,j;
-    printf("------------------------------------------------------------");
-    printf("\t");
-    //fprintf(fileLogging, "\t");
-    for(i=0;i<10;i++){
-        printf("3R%i\t", i);
-        //fprintf(fileLogging, "R%i\t", i);
-    }
-    printf("\n");
-    //fprintf(fileLogging, "\n");
-    for(i = 0; i < 18; i++){ //Print resource table and max processes on the side
-        printf("P%i\t", i);
-        //fprintf(fileLogging, "P%i\t", i);
-        for(j = 0; j < 10; j++){
-            printf("%i\t", resourceTable[i][j]);
-            //fprintf(fileLogging, "%i\t", resourceTable[i][j]);
-        }
-        printf("\n");
-        //fprintf(fileLogging, "\n");
-    }
 }

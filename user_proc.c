@@ -36,16 +36,16 @@ int main(int argc, char *argv[]){
     double readFromMem;
     readFromMem = *shm_ptr;
 
-    //connect to message queue
-    if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //get message queue key used in oss
-    if ((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
+    //Create message queue
+    if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
+    if((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
 
-    printf("This is your page number: %i. This is your memory address: %i", randomPage, memoryAddress);
+    printf("This is your page number: %i. This is your memory address: %i", page, memoryAddress);
 
     //Process chooses if it will read or write (more inclined to read)
     readWrite = randomNumberGenerator(100);
@@ -61,15 +61,19 @@ int main(int argc, char *argv[]){
     //Convert integer to string
     char memory[50];
     char permission[50];
+    char pageNum[50];
     snprintf(memory, sizeof(memory), "%i", memoryAddress);
     snprintf(permission, sizeof(permission), "%i", readWrite);
+    snprintf(pageNum, sizeof(pageNum), "%i", readWrite);
 
     //add seconds and nanoseconds together with a space in between to send as one message
     char *together;
-    together = malloc(strlen(memory) + strlen(permission) + 1 + 1);
+    together = malloc(strlen(memory) + strlen(permission) + strlen(pageNum) + 1 + 1 + 1);
     strcpy(together, memory);
     strcat(together, " ");
     strcat(together, permission);
+    strcat(together, " ");
+    strcat(together, pageNum);
     printf("The string together with memory and permission: %s", together);
 
     //send our string to message queue
