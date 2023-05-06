@@ -118,7 +118,7 @@ int main(int argc, char *argv[]){
                 return 1;
             }
             if(childpid != 0 ){               
-                printf("OSS - Child PID: %ld ", childpid)
+                printf("OSS - Child PID: %ld ", childpid);
             }
         }
         //Connect to message queue
@@ -151,8 +151,10 @@ int main(int argc, char *argv[]){
             }
         }
          printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n",page,readWrite,memory);
-
-         buf.strData = 1; //send message to process to terminate
+        char one[2];
+        int numOne = 1;
+        snprintf(one, sizeof(one), "%i", numOne);
+         buf.strData = one; //send message to process to terminate
          buf.intData = getpid();
          buf.mtype = (long)getppid();
          if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
