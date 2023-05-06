@@ -133,9 +133,11 @@ int main(int argc, char *argv[]){
         int readWrite;
         int page;
 
-        //seperate the message by white space and assign it to seconds and nanoseconds respectively
+        prtinf("sepearting message ")
+        //seperate the message by white space and assign it ot page number, memory address, and read/write
         char * procChoice = strtok(buf.strData, " ");
         while( procChoice != NULL ) {
+            printf("message is now: %s", procChoice);
             seperate++;
             if(seperate == 1){
                 memory = atoi(procChoice); //assign second as an integer
