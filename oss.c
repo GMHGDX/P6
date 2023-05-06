@@ -150,7 +150,7 @@ int main(int argc, char *argv[]){
                 break;
             }
         }
-         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n",page,readWrite,memory);
+         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
          strcpy(buf.strData, "1");
          buf.intData = getpid();
          buf.mtype = (long)getppid();

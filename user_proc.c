@@ -36,6 +36,8 @@ int main(int argc, char *argv[]){
     double readFromMem;
     readFromMem = *shm_ptr;
 
+    printf("Worker - Time from memory: %i", readFromMem);
+
     //Create message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
     if((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
@@ -45,17 +47,17 @@ int main(int argc, char *argv[]){
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
 
-    printf("This is your page number: %i. This is your memory address: %i", page, memoryAddress);
+    printf("Worker - This is your page number: %i. This is your memory address: %i", page, memoryAddress);
 
     //Process chooses if it will read or write (more inclined to read)
     readWrite = randomNumberGenerator(100);
     if(readWrite < 70){
         readWrite = 1; //requesting read
-        printf("the process is requesting read");
+        printf("Worker - The process is requesting read");
 
     } else{
         readWrite = 2; //requesting write
-        printf("the process is requesting write");
+        printf("Worker - The process is requesting write");
     }
     
     //Convert integer to string
@@ -74,7 +76,7 @@ int main(int argc, char *argv[]){
     strcat(together, permission);
     strcat(together, " ");
     strcat(together, pageNum);
-    printf("The string together with memory and permission: %s", together);
+    printf("Worker - The string together with memory and permission: %s", together);
 
     //send our string to message queue
     strcpy(buf.strData, together); //copy our new string into string data buffer
@@ -93,7 +95,7 @@ int main(int argc, char *argv[]){
 
         if(checkResponse == 1){
             child++;
-            printf("Child is terminating!");
+            printf("Worker - Child is terminating!");
         }
     }
     return 0;
