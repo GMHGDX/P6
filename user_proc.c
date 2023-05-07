@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
     int memoryAddress;
     int randomOffset;
     int page;
-    int time;
+    int Systime;
     int readWrite;
     int checkResponse;
     int pageTable[32][1]; //Initialize page table
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
     //read time from memory
     struct Table readFromMem;
     readFromMem = *shm_ptr;
-    time = readFromMem.currentTime;
+    Systime = readFromMem.currentTime;
 
     //Write pagetable to memory
     struct Table writeToMem;
@@ -67,9 +67,9 @@ int main(int argc, char *argv[]){
 
     int PT[32][1];
     PT[32][1] = writeToMem.pageTable;
-    printf("Worker - Time from memory: %lf\n", time);
-
+    printf("Worker - System time from memory: %lf\n", Systime);
     printf("Worker - Here is the page table in memory:\n");
+    
     //Print empty page table
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
