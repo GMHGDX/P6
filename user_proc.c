@@ -72,7 +72,7 @@ int main(int argc, char *argv[]){
     struct Table writeToMem;
     for(i = 1; i < 33; i++){
         for(j = 0;j < 1; j++){
-            if(page > 0){
+            if(page == i){
                 pageTable[i][j] = page;
             }
             writeToMem.pageTable[i][j] = pageTable[i][j];   
