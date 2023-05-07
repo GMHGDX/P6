@@ -61,9 +61,10 @@ int randomNumberGenerator(int limit)
     sec = (rand() % (limit)) + 1;
     return sec;
 }
-struct Tables {
+struct Tables{
     int pageTable[32][1];
     int currentTime;
+    char str[100];  
 };
 
 //msgbuffer for message queue
