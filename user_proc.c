@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
             writeToMem.pageTable[i][j] = pageTable[i][j];
             printf("%i\t", writeToMem.pageTable[i][j]);
         }
+        printf("\n");
     }
     *shm_ptr = writeToMem;
 
