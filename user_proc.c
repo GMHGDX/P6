@@ -68,14 +68,17 @@ int main(int argc, char *argv[]){
 
     if(memoryAddress > 32000){ memoryAddress == 32000; } //if memory address exceeds 32000, keep it at 32000
 
+    printf("print as we write to it/n");
     //Write pagetable to memory
     struct Table writeToMem;
     for(i = 1; i < 33; i++){
+        printf("Page%i\t", i);
         for(j = 0;j < 1; j++){
             if(page == i){
                 writeToMem.pageTable[i][j] = memoryAddress;
             }
-            writeToMem.pageTable[i][j] = pageTable[i][j];   
+            writeToMem.pageTable[i][j] = pageTable[i][j];
+            printf("%i\t", writeToMem.pageTable[i][j]);
         }
     }
     *shm_ptr = writeToMem;
@@ -93,6 +96,7 @@ int main(int argc, char *argv[]){
         }
         printf("\n");
     }
+    ////////////////////////////////////////////////////////////////////////
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
 
