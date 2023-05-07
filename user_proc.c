@@ -22,14 +22,14 @@ int main(int argc, char *argv[]){
 
     //Initialize empty page table (all zeros)
     int i, j;
-    for(i = 0; i < 18; i++){
-        for(j = 0; j < 10; j++){
+    for(i = 1; i < 33; i++){
+        for(j = 0; j < 1; j++){
            pageTable[i][j] = 0;
         }
     }
     //Print empty page table
     printf("--Page Table--\n");
-    for(i = 0; i < 32; i++){
+    for(i = 1; i < 33; i++){
         printf("P%i\t", i);
         for(j = 0; j < 1; j++){
             printf("%i\t",pageTable[i][j]);
@@ -46,7 +46,6 @@ int main(int argc, char *argv[]){
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
     if((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
 
-//////////////////////////////////////////////////////////
     //get shared memory
     int shm_id = shmget(sh_key, sizeof(struct Table), 0666);
     if(shm_id <= 0) { fprintf(stderr,"CHILD ERROR: Failed to get shared memory, shared memory id = %i\n", shm_id); exit(1); }
@@ -59,41 +58,40 @@ int main(int argc, char *argv[]){
     struct Table readFromMem;
     readFromMem = *shm_ptr;
     Systime = readFromMem.currentTime;
-
-    //Write pagetable to memory
-    struct Table writeToMem;
-    for(i = 0; i < 32; i++){
-        for(j = 0;j < 1; j++){
-            writeToMem.pageTable[i][j] = pageTable[i][j];   
-        }
-    }
-    *shm_ptr = writeToMem;
-
-    int PT[32][1];
+    
     printf("Worker - System time from memory: %lf\n", Systime);
-    printf("Worker - Here is the page table in memory:\n");
-
-    //Print empty page table
-    printf("--Page Table--\n");
-    for(i = 0; i < 32; i++){
-        printf("P%i\t", i);
-        for(j = 0; j < 1; j++){
-            PT[i][j] = writeToMem.pageTable[i][j];
-            printf("%i\t",PT[i][j]);
-        }
-        printf("\n");
-    }
-    ///////////////////////////////////////////////////////////////////////
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
 
-    //Add it to the page table
+    if(memoryAddress > 32000){ memoryAddress == 32000; } //if memory address exceeds 32000, keep it at 32000
 
-    if(memoryAddress > 32000){
-        memoryAddress == 32000;
+    //Write pagetable to memory
+    struct Table writeToMem;
+    for(i = 1; i < 33; i++){
+        for(j = 0;j < 1; j++){
+            if(page > 0){
+                pageTable[i][j] = page;
+            }
+            writeToMem.pageTable[i][j] = pageTable[i][j];   
+        }
+    }
+    *shm_ptr = writeToMem;
+
+    int PT[32][1];
+    printf("Worker - Here is the page table in memory:\n");
+
+    //Print contents of page table
+    printf("--Page Table--\n");
+    for(i = 1; i < 33; i++){
+        printf("P%i\t", i);
+        for(j = 0; j < 1; j++){
+            PT[i][j] = writeToMem.pageTable[i][j];
+            printf("%i\t",PT[i][j]);
+        }
+        printf("\n");
     }
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
