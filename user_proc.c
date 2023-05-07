@@ -42,14 +42,14 @@ int main(int argc, char *argv[]){
     struct Table readFromMem;
     readFromMem = *shm_ptr;
     Systime = readFromMem.currentTime;  
-    printf("Worker - System time from memory: %lf\n", Systime);
+    printf("Worker - System time from memory: %f\n", Systime);
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
 
-    if(memoryAddress > 32000){ memoryAddress == 32000; } //if memory address exceeds 32000, keep it at 32000
+    if(memoryAddress > 32000){ memoryAddress = 32000; } //if memory address exceeds 32000, keep it at 32000
     printf("cild - memoery address to insert is %i________________________________________________", memoryAddress);
 
 ///////////////////////////////////////////////////////////////////
