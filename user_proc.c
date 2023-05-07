@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
     //Print empty page table
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
-        printf("P%i\t", i);
+        printf("Page%i\t", i);
         for(j = 0; j < 1; j++){
             printf("%i\t",pageTable[i][j]);
         }
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
-        printf("P%i\t", i);
+        printf("Page%i\t", i);
         for(j = 0; j < 1; j++){
             PT[i][j] = writeToMem.pageTable[i][j];
             printf("%i\t",PT[i][j]);
@@ -153,6 +153,7 @@ int main(int argc, char *argv[]){
             loopAgain = randomNumberGenerator(2);
             if(loopAgain == 1){
                 loopAmount = 0;
+                printf("Worker - Child Decide to loop again!\n");
             }
             if(loopAgain == 2){
                 printf("Worker - Child is terminating!\n");
