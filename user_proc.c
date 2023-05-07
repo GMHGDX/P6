@@ -82,7 +82,7 @@ int main(int argc, char *argv[]){
 ////////////////////////////////////////////////////////////////////////
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
-    
+
     //Process chooses if it will read or write (more inclined to read)
     readWrite = randomNumberGenerator(100);
     if(readWrite < 70){

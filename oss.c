@@ -95,6 +95,9 @@ int main(int argc, char *argv[]){
     struct Table writeToMem;
     printf("OSS - Worte the page table in memory\n");
     for(i = 1; i < 33; i++){
+        if(i == 2){
+            writeToMem.pageTable[i] = 2;
+        }
         writeToMem.pageTable[i] = pageTable[i];
     }
     writeToMem.currentTime = 0;
@@ -212,7 +215,7 @@ int main(int argc, char *argv[]){
         printf("OSS - The buf.str data: %s\n", buf.strData);
         if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
         sleep(1);
-        
+
         break;
     }
     //remove this and below
