@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
             if(page == i){
                 writeToMem.pageTable[i][j] = memoryAddress;
             }
-            //writeToMem.pageTable[i][j] = pageTable[i][j];   
+            writeToMem.pageTable[i][j] = pageTable[i][j];   
         }
     }
     *shm_ptr = writeToMem;
