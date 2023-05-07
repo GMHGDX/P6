@@ -62,11 +62,15 @@ int main(int argc, char *argv[]){
 
     //Write pagetable to memory
     struct Table writeToMem;
-    writeToMem.pageTable[32][1] = pageTable[32][1];
+    for(i = 0; i < 32; i++){
+        for(j = 0;j < 1; j++){
+            writeToMem.pageTable[i][j] = pageTable[i][j];   
+        }
+    }
     *shm_ptr = writeToMem;
 
     int PT[32][1];
-    PT[32][1] = writeToMem.pageTable;
+    
     printf("Worker - System time from memory: %lf\n", Systime);
     printf("Worker - Here is the page table in memory:\n");
 
@@ -75,6 +79,7 @@ int main(int argc, char *argv[]){
     for(i = 0; i < 32; i++){
         printf("P%i\t", i);
         for(j = 0; j < 1; j++){
+            PT[i][j] = writeToMem.pageTable;
             printf("%i\t",PT[i][j]);
         }
         printf("\n");
