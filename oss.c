@@ -126,6 +126,9 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         for(i = 1; i < 33; i++){
             writeToMem.pageTable[i] = readFromMem.pageTable[i];
+            printf("WRITTENP%i\t", i);
+            printf("%i\t",writeToMem.pageTable[i]);
+            printf("\n");
         }
         *shm_ptr = writeToMem;
 
