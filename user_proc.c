@@ -70,7 +70,6 @@ int main(int argc, char *argv[]){
     *shm_ptr = writeToMem;
 
     int PT[32][1];
-    
     printf("Worker - System time from memory: %lf\n", Systime);
     printf("Worker - Here is the page table in memory:\n");
 
