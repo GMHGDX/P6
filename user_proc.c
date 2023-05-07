@@ -50,6 +50,7 @@ int main(int argc, char *argv[]){
     memoryAddress = (page * 1024) + randomOffset;
 
     if(memoryAddress > 32000){ memoryAddress == 32000; } //if memory address exceeds 32000, keep it at 32000
+    printf("cild - memoery address to insert is %i________________________________________________", memoryAddress);
 
 ///////////////////////////////////////////////////////////////////
     //Read table from memory
