@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
     for(i = 1; i < 33; i++){
         for(j = 0;j < 1; j++){
             if(page == i){
-                pageTable[i][j] = page;
+                pageTable[i][j] = memoryAddress;
             }
             writeToMem.pageTable[i][j] = pageTable[i][j];   
         }
