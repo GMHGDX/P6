@@ -17,6 +17,24 @@ int main(int argc, char *argv[]){
     int page;
     int readWrite;
     int checkResponse;
+    int pageTable[32][1]; //Initialize page table
+
+    //Initialize empty page table (all zeros)
+    int i, j;
+    for(i = 0; i < 18; i++){
+        for(j = 0; j < 10; j++){
+           pageTable[i][j] = 0;
+        }
+    }
+    //Print empty page table
+    printf("--Page Table--\n");
+    for(i = 0; i < 32; i++){
+        printf("P%i\t", i);
+        for(j = 0; j < 1; j++){
+            printf("%i\t",pageTable[i][j]);
+        }
+        printf("\n");
+    }
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -45,6 +63,8 @@ int main(int argc, char *argv[]){
     page = randomNumberGenerator(32); //max pages a process can request is 32
     randomOffset = randomNumberGenerator(1023); //max offset is 1023
     memoryAddress = (page * 1024) + randomOffset;
+
+    //Add it to the page table
 
     if(memoryAddress > 32000){
         memoryAddress == 32000;
@@ -97,8 +117,23 @@ int main(int argc, char *argv[]){
         checkResponse = atoi(buf.strData);
 
         if(checkResponse == 1){
-            printf("Worker - Child is terminating!\n");
+            //printf("Worker - Child is terminating!\n");
             break;
+        }
+    }
+    int loopAmount = 0;
+    int loopAgain;
+    while(loopAmount < 1001){ //Check to terminate after it loops 1000 times, randomly terminates if 1000 passes
+        loopAmount++;
+        if(loopAmount == 1001){
+            loopAgain = randomNumberGenerator(2);
+            if(loopAgain == 1){
+                loopAmount = 0;
+            }
+            if(loopAgain == 2){
+                printf("Worker - Child is terminating!\n");
+                break;
+            }
         }
     }
     return 0;
