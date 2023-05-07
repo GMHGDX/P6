@@ -70,11 +70,11 @@ int main(int argc, char *argv[]){
     fileLogging = fopen(logFile, "w+"); //Open the log file before input begins 
 
     //create shared memory
-    int shm_id = shmget(sh_key, sizeof(double), IPC_CREAT | 0666);
+    int shm_id = shmget(sh_key, sizeof(struct Table), IPC_CREAT | 0666);
     if(shm_id <= 0) {fprintf(stderr,"ERROR: Failed to get shared memory, shared memory id = %i\n", shm_id); exit(1); }
 
     //attatch memory we allocated to our process and point pointer to it 
-    double *shm_ptr = (double*) (shmat(shm_id, NULL, 0));
+    struct Table *shm_ptr = (struct Table*) (shmat(shm_id, NULL, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Shared memory attach failed\n"); exit(1); }
 
     //start the simulated system clock
@@ -102,7 +102,8 @@ int main(int argc, char *argv[]){
         currentTime = sec + nano/BILLION;
 
         //Write the current time to memory for children to read
-        writeToMem = currentTime;
+        struct Table writeToMem;
+        writeToMem.currentTime = currentTime;
         *shm_ptr = writeToMem;
 
         if(numofchild < 1 ){ //launch only one child for now //&& limitReach >= currentTime

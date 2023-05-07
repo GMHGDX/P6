@@ -15,6 +15,7 @@ int main(int argc, char *argv[]){
     int memoryAddress;
     int randomOffset;
     int page;
+    int time;
     int readWrite;
     int checkResponse;
     int pageTable[32][1]; //Initialize page table
@@ -45,19 +46,40 @@ int main(int argc, char *argv[]){
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
     if((msqid = msgget(msqkey, PERMS)) == -1) { perror("msgget in child"); exit(1); } //access oss message queue
 
+//////////////////////////////////////////////////////////
     //get shared memory
-    int shm_id = shmget(sh_key, sizeof(double), 0666);
+    int shm_id = shmget(sh_key, sizeof(struct Table), 0666);
     if(shm_id <= 0) { fprintf(stderr,"CHILD ERROR: Failed to get shared memory, shared memory id = %i\n", shm_id); exit(1); }
 
     //attatch memory we allocated to our process and point pointer to it 
-    double *shm_ptr = (double*) (shmat(shm_id, 0, 0));
+    struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Child Shared memory attach failed\n"); exit(1); }
 
     //read time from memory
-    double readFromMem;
+    struct Table readFromMem;
     readFromMem = *shm_ptr;
+    time = readFromMem.currentTime;
 
-    printf("Worker - Time from memory: %lf\n", readFromMem);
+    //Write pagetable to memory
+    struct Table writeToMem;
+    writeToMem.pageTable = pageTable[32][1];
+    *shm_ptr = writeToMem;
+
+    int PT[32][1];
+    PT[32][1] = writeToMem.pageTable;
+    printf("Worker - Time from memory: %lf\n", time);
+
+    printf("Worker - Here is the page table in memory:\n");
+    //Print empty page table
+    printf("--Page Table--\n");
+    for(i = 0; i < 32; i++){
+        printf("P%i\t", i);
+        for(j = 0; j < 1; j++){
+            printf("%i\t",PT[i][j]);
+        }
+        printf("\n");
+    }
+    ///////////////////////////////////////////////////////////////////////
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
