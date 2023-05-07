@@ -12,14 +12,15 @@ int main(int argc, char *argv[]){
     int msqid = 0;
     key_t msqkey;
 
-    int i, j;
+    int i; 
+    int j = 0;
     int memoryAddress;
     int randomOffset;
     int page;
     int Systime;
     int readWrite;
     int checkResponse;
-    int pageTable[32][1]; //Initialize page table
+    int pageTable[32]; //Initialize page table
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -50,38 +51,31 @@ int main(int argc, char *argv[]){
     memoryAddress = (page * 1024) + randomOffset;
 
     if(memoryAddress > 32000){ memoryAddress = 32000; } //if memory address exceeds 32000, keep it at 32000
-    printf("cild - memoery address to insert is %i________________________________________________", memoryAddress);
+    printf("cild - memoery address to insert is %i________________________________________________\n", memoryAddress);
 
 ///////////////////////////////////////////////////////////////////
     //Read table from memory
     printf("Worker - Reading page table from memory:\n");
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
-        for(j = 0;j < 1; j++){
-            readFromMem.pageTable[i][j] = pageTable[i][j];
-            printf("%i\t", readFromMem.pageTable[i][j]);
-        }
+        readFromMem.pageTable[i] = pageTable[i];
+        printf("%i\t", readFromMem.pageTable[i]);
         printf("\n");
     }
 
     //write new page table to memory
     struct Table writeToMem;
-    //int PT[32][1];
     printf("Worker - Here is the page table in memory:\n");
 
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
-        for(j = 0; j < 1; j++){
-            writeToMem.pageTable[i][j] = readFromMem.pageTable[i][j];
-            if(page == i){
-                writeToMem.pageTable[i][j] = memoryAddress;
-            } 
-            //PT[i][j] = writeToMem.pageTable[i][j];
-            //printf("%i\t",PT[i][j]);
-            printf("%i\t", writeToMem.pageTable[i][j]);
-        }
+        writeToMem.pageTable[i] = readFromMem.pageTable[i];
+        if(page == i){
+            writeToMem.pageTable[i] = memoryAddress;
+        } 
+        printf("%i\t", writeToMem.pageTable[i]);
         printf("\n");
     }
     writeToMem.currentTime = readFromMem.currentTime;

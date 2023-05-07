@@ -86,10 +86,8 @@ int main(int argc, char *argv[]){
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
-        for(j = 0; j < 1; j++){
-           pageTable[i][j] = 0;
-           printf("%i\t",pageTable[i][j]);
-        }
+        pageTable[i] = 0;
+        printf("%i\t",pageTable[i]);
         printf("\n");
     }
 
@@ -98,10 +96,8 @@ int main(int argc, char *argv[]){
     printf("OSS - page table in memory/n");
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
-        for(j = 0;j < 1; j++){
-            writeToMem.pageTable[i][j] = pageTable[i][j];
-            printf("%i\t", writeToMem.pageTable[i][j]);
-        }
+        writeToMem.pageTable[i] = pageTable[i];
+        printf("%i\t", writeToMem.pageTable[i]);
         printf("\n");
     }
     writeToMem.currentTime = 0;
@@ -132,9 +128,7 @@ int main(int argc, char *argv[]){
         readFromMem = *shm_ptr;
         writeToMem.currentTime = currentTime;
         for(i = 1; i < 33; i++){
-            for(j = 0;j < 1; j++){
-                writeToMem.pageTable[i][j] = readFromMem.pageTable[i][j];
-            }
+            writeToMem.pageTable[i] = readFromMem.pageTable[i];
         }
         *shm_ptr = writeToMem;
 
