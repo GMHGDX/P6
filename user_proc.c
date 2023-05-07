@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
     //Read table from memory
     printf("Worker - Reading page table from memory:\n");
     for(i = 1; i < 33; i++){
-        printf("Page%i\t", i);
+        printf("readPage%i\t", i);
         readFromMem.pageTable[i] = pageTable[i];
         printf("%i\t", readFromMem.pageTable[i]);
         printf("\n");
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
-        printf("Page%i\t", i);
+        printf("writePage%i\t", i);
         writeToMem.pageTable[i] = readFromMem.pageTable[i];
         if(page == i){
             writeToMem.pageTable[i] = memoryAddress;
