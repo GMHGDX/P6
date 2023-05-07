@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
 
     //Write pagetable to memory
     struct Table writeToMem;
-    writeToMem.pageTable = pageTable;
+    writeToMem.pageTable[32][1] = pageTable[32][1];
     *shm_ptr = writeToMem;
 
     int PT[32][1];
