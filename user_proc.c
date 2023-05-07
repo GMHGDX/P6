@@ -12,6 +12,7 @@ int main(int argc, char *argv[]){
     int msqid = 0;
     key_t msqkey;
 
+    int i, j;
     int memoryAddress;
     int randomOffset;
     int page;
@@ -19,23 +20,6 @@ int main(int argc, char *argv[]){
     int readWrite;
     int checkResponse;
     int pageTable[32][1]; //Initialize page table
-
-    //Initialize empty page table (all zeros)
-    int i, j;
-    for(i = 1; i < 33; i++){
-        for(j = 0; j < 1; j++){
-           pageTable[i][j] = 0;
-        }
-    }
-    //Print empty page table
-    printf("--Page Table--\n");
-    for(i = 1; i < 33; i++){
-        printf("Page%i\t", i);
-        for(j = 0; j < 1; j++){
-            printf("%i\t",pageTable[i][j]);
-        }
-        printf("\n");
-    }
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -54,11 +38,10 @@ int main(int argc, char *argv[]){
     struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Child Shared memory attach failed\n"); exit(1); }
 
-    //read time from memory
+    //read system time from memory
     struct Table readFromMem;
     readFromMem = *shm_ptr;
-    Systime = readFromMem.currentTime;
-    
+    Systime = readFromMem.currentTime;  
     printf("Worker - System time from memory: %lf\n", Systime);
 
     //request memory to random page
@@ -68,23 +51,21 @@ int main(int argc, char *argv[]){
 
     if(memoryAddress > 32000){ memoryAddress == 32000; } //if memory address exceeds 32000, keep it at 32000
 
-    printf("print as we write to it/n");
-    //Write pagetable to memory
-    struct Table writeToMem;
+///////////////////////////////////////////////////////////////////
+    //Read table from memory
+    printf("Worker - Reading page table from memory:\n");
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
         for(j = 0;j < 1; j++){
-            if(page == i){
-                writeToMem.pageTable[i][j] = memoryAddress;
-            }
-            writeToMem.pageTable[i][j] = pageTable[i][j];
-            printf("%i\t", writeToMem.pageTable[i][j]);
+            readFromMem.pageTable[i][j] = pageTable[i][j];
+            printf("%i\t", readFromMem.pageTable[i][j]);
         }
         printf("\n");
     }
-    *shm_ptr = writeToMem;
 
-    int PT[32][1];
+    //write new page table to memory
+    struct Table writeToMem;
+    //int PT[32][1];
     printf("Worker - Here is the page table in memory:\n");
 
     //Print contents of page table
@@ -92,12 +73,19 @@ int main(int argc, char *argv[]){
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
         for(j = 0; j < 1; j++){
-            PT[i][j] = writeToMem.pageTable[i][j];
-            printf("%i\t",PT[i][j]);
+            writeToMem.pageTable[i][j] = readFromMem.pageTable[i][j];
+            if(page == i){
+                writeToMem.pageTable[i][j] = memoryAddress;
+            } 
+            //PT[i][j] = writeToMem.pageTable[i][j];
+            //printf("%i\t",PT[i][j]);
+            printf("%i\t", writeToMem.pageTable[i][j]);
         }
         printf("\n");
     }
-    ////////////////////////////////////////////////////////////////////////
+    writeToMem.currentTime = readFromMem.currentTime;
+    *shm_ptr = writeToMem;
+////////////////////////////////////////////////////////////////////////
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
 

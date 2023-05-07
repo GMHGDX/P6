@@ -80,13 +80,40 @@ int main(int argc, char *argv[]){
     //start the simulated system clock
     if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
 
+    //intialize page table to zero
+    int pageTable[32][1]; //Initialize and write page table as all zeros
+    int i, j;
+    printf("--Page Table--\n");
+    for(i = 1; i < 33; i++){
+        printf("Page%i\t", i);
+        for(j = 0; j < 1; j++){
+           pageTable[i][j] = 0;
+           printf("%i\t",pageTable[i][j]);
+        }
+        printf("\n");
+    }
+
+    //Write pagetable to memory
+    struct Table writeToMem;
+    printf("OSS - page table in memory/n");
+    for(i = 1; i < 33; i++){
+        printf("Page%i\t", i);
+        for(j = 0;j < 1; j++){
+            writeToMem.pageTable[i][j] = pageTable[i][j];
+            printf("%i\t", writeToMem.pageTable[i][j]);
+        }
+        printf("\n");
+    }
+    writeToMem.currentTime = 0;
+    *shm_ptr = writeToMem;
+
     //intialize values for use in while loop
     double currentTime; //time going into shared memory
     double limitReach = 0; //random time next child is forked 
-    double writeToMem;
     int numofchild = 0;
     int milliSec = 0; //milliseconds used in time limit
     char readWriteStr[10];
+    struct Table readFromMem; // To read from shared ememory
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
@@ -102,8 +129,13 @@ int main(int argc, char *argv[]){
         currentTime = sec + nano/BILLION;
 
         //Write the current time to memory for children to read
-        struct Table writeToMem;
+        readFromMem = *shm_ptr;
         writeToMem.currentTime = currentTime;
+        for(i = 1; i < 33; i++){
+            for(j = 0;j < 1; j++){
+                writeToMem.pageTable[i][j] = readFromMem.pageTable[i][j];
+            }
+        }
         *shm_ptr = writeToMem;
 
         if(numofchild < 2 ){ //launch only one child for now //&& limitReach >= currentTime
