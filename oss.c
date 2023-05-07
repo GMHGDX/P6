@@ -212,10 +212,8 @@ int main(int argc, char *argv[]){
         printf("OSS - The buf.str data: %s\n", buf.strData);
         if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
         sleep(1);
-
-     if(numofchild == 3){
+        
         break;
-     }
     }
     //remove this and below
     printf("deleting memory\n");
