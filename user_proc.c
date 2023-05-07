@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){
     for(i = 0; i < 32; i++){
         printf("P%i\t", i);
         for(j = 0; j < 1; j++){
-            PT[i][j] = writeToMem.pageTable;
+            PT[i][j] = writeToMem.pageTable[i][j];
             printf("%i\t",PT[i][j]);
         }
         printf("\n");
