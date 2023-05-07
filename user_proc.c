@@ -13,7 +13,6 @@ int main(int argc, char *argv[]){
     key_t msqkey;
 
     int i; 
-    int j = 0;
     int memoryAddress;
     int randomOffset;
     int page;

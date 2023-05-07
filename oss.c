@@ -82,7 +82,7 @@ int main(int argc, char *argv[]){
 
     //intialize page table to zero
     int pageTable[32]; //Initialize and write page table as all zeros
-    int i, j;
+    int i;
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
         printf("Page%i\t", i);
