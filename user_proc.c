@@ -25,7 +25,6 @@ int main(int argc, char *argv[]){
 
     //grab sh_key from oss for shared memory
     int sh_key = atoi(argv[1]);
-    printf("THE KEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY: %i\n", sh_key);
 
     //Connect to message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
@@ -40,9 +39,9 @@ int main(int argc, char *argv[]){
     if (shm_ptr <= 0) { fprintf(stderr,"Child Shared memory attach failed\n"); exit(1); }
 
     //read system time from memory
-    struct Table readFromMem;
-    readFromMem = *shm_ptr;
-    Systime = readFromMem.currentTime;  
+    struct Table readFromMemWorker;
+    readFromMemWorker = *shm_ptr;
+    Systime = readFromMemWorker.currentTime;  
     printf("Worker - System time from memory: %i\n", Systime);
 
     //request memory to random page
@@ -58,28 +57,28 @@ int main(int argc, char *argv[]){
     printf("Worker - Reading page table from memory:\n");
     for(i = 0; i < 32; i++){
         printf("readPage%i\t", i+1);
-        readFromMem.pageTable[i] = pageTable[i];
-        printf("%i\t", readFromMem.pageTable[i]);
+        readFromMemWorker.pageTable[i] = pageTable[i];
+        printf("%i\t", readFromMemWorker.pageTable[i]);
         printf("\n");
     }
 
     //write new page table to memory
-    struct Table writeToMem;
+    struct Table writeToMemWorker;
     printf("Worker - Here is the page table in memory:\n");
 
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
         printf("writePage%i\t", i+1);
-        writeToMem.pageTable[i] = readFromMem.pageTable[i];
+        writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
         if(page == i){
-            writeToMem.pageTable[i] = memoryAddress;
+            writeToMemWorker.pageTable[i] = memoryAddress;
         } 
-        printf("%i\t", writeToMem.pageTable[i]);
+        printf("%i\t", writeToMemWorkerWorker.pageTable[i]);
         printf("\n");
     }
-    writeToMem.currentTime = readFromMem.currentTime;
-    *shm_ptr = writeToMem;
+    writeToMemWorker.currentTime = readFromMemWorker.currentTime;
+    *shm_ptr = writeToMemWorker;
 ////////////////////////////////////////////////////////////////////////
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
