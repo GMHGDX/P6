@@ -95,10 +95,7 @@ int main(int argc, char *argv[]){
     struct Table writeToMem;
     printf("OSS - Wrote to the page table in memory\n");
     for(i = 1; i < 33; i++){
-        printf("writingggggggPage%i\t", i);
         writeToMem.pageTable[i] = pageTable[i];
-        printf("%i\t",pageTable[i]);
-        printf("\n");
     }
     writeToMem.currentTime = 0;
     *shm_ptr = writeToMem;
@@ -130,7 +127,7 @@ int main(int argc, char *argv[]){
         for(i = 1; i < 33; i++){
             writeToMem.pageTable[i] = readFromMem.pageTable[i];
             printf("WRITTENP%i\t", i);
-            printf("%i\t",writeToMem.pageTable[i]);
+            printf("%i\t",readFromMem.pageTable[i]);
             printf("\n");
         }
         *shm_ptr = writeToMem;
