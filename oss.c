@@ -193,10 +193,10 @@ int main(int argc, char *argv[]){
         printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memory, currentTime);
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
 
-        if(readWrite == "read"){ //process is requesting to read
+        if(strcmp(readWrite, "read") == 0){ //process is requesting to read
             printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memory, 1, childpid, currentTime);
         }
-        if(readWrite == "write"){ //Process is requesting to write
+        if(strcmp(readWrite, "write") == 0){ //Process is requesting to write
         for(i = 0; )
             if(memory is in frame){ //The address is in frame
                 printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memory, 1, currentTime);
