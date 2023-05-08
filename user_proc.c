@@ -68,7 +68,6 @@ int main(int argc, char *argv[]){
     struct Table writeToMemWorker;
     printf("Worker - Here is the page table in memory:\n");
 
-    writeToMemWorker.pageTable[page+1] = memoryAddress;
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
@@ -80,6 +79,7 @@ int main(int argc, char *argv[]){
         printf("%i\t", writeToMemWorker.pageTable[i]);
         printf("\n");
     }
+     writeToMemWorker.pageTable[page-1] = memoryAddress;
     writeToMemWorker.currentTime = readFromMemWorker.currentTime;
     *shm_ptr = writeToMemWorker;
 
