@@ -46,13 +46,10 @@ int main(int argc, char *argv[]){
     Systime = readFromMemWorker.currentTime;  
     printf("Worker - System time from memory: %lf\n", Systime);
 
-
-
     //Read table from memory
     printf("Worker - Reading page table from memory:\n");
     for(i = 0; i < 32; i++){
         printf("readPage%i\t", i+1);
-        //readFromMemWorker.pageTable[i] = pageTable[i];
         printf("%i\t", readFromMemWorker.pageTable[i]);
         printf("\n");
     }
@@ -67,24 +64,24 @@ int main(int argc, char *argv[]){
 
 ///////////////////////////////////////////////////////////////////
 
+    //write new page table to memory
+    struct Table writeToMemWorker;
+    printf("Worker - Here is the page table in memory:\n");
 
-    // //write new page table to memory
-    // struct Table writeToMemWorker;
-    // printf("Worker - Here is the page table in memory:\n");
+    //Print contents of page table
+    printf("--Page Table--\n");
+    for(i = 0; i < 32; i++){
+        printf("writePage%i\t", i+1);
+        writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
+        if(page == i){
+            writeToMemWorker.pageTable[i] = memoryAddress;
+        } 
+        printf("%i\t", writeToMemWorker.pageTable[i]);
+        printf("\n");
+    }
+    writeToMemWorker.currentTime = readFromMemWorker.currentTime;
+    *shm_ptr = writeToMemWorker;
 
-    // //Print contents of page table
-    // printf("--Page Table--\n");
-    // for(i = 0; i < 32; i++){
-    //     printf("writePage%i\t", i+1);
-    //     writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
-    //     if(page == i){
-    //         writeToMemWorker.pageTable[i] = memoryAddress;
-    //     } 
-    //     printf("%i\t", writeToMemWorker.pageTable[i]);
-    //     printf("\n");
-    // }
-    // writeToMemWorker.currentTime = readFromMemWorker.currentTime;
-    // *shm_ptr = writeToMemWorker;
 ////////////////////////////////////////////////////////////////////////
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
