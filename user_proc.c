@@ -44,6 +44,8 @@ int main(int argc, char *argv[]){
     Systime = readFromMemWorker.currentTime;  
     printf("Worker - System time from memory: %i\n", Systime);
 
+
+
     //Read table from memory
     printf("Worker - Reading page table from memory:\n");
     for(i = 0; i < 32; i++){
