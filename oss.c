@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
         currentTime = sec + nano/BILLION;
 
         //Write the current time to memory for children to read
-        printf("OSS - System time from memory: %ld\n", currentTime);
+        printf("OSS - System time from memory: %lf\n", currentTime);
         readFromMem = *shm_ptr;
         writeToMem.currentTime = currentTime;
         for(i = 0; i < 32; i++){
