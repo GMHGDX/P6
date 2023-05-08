@@ -197,11 +197,9 @@ int main(int argc, char *argv[]){
             printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memory, 1, childpid, currentTime);
         }
         if(strcmp(readWrite, "write") == 0){ //Process is requesting to write
-        for(i = 0; )
             if(memory is in frame){ //The address is in frame
                 printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memory, 1, currentTime);
             }
-        for(i = 0)
             if(memory is not in frame){ //The address is not in frame
                 printf("OSS: Address %i is not in a frame, pagefault\n", memory);
                 printf("11OSS: Clearing frame %i and swapping in PIDs %d page %i\n", 1 ,childpid, page);
