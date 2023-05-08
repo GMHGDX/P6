@@ -154,7 +154,7 @@ int main(int argc, char *argv[]){
                 return 1;
             }
             if(childpid != 0 ){               
-                printf("OSS - Child PID: %ld\n", childpid);
+                printf("OSS - Child PID: %d\n", childpid);
             }
         }
 
@@ -190,11 +190,11 @@ int main(int argc, char *argv[]){
         if(readWrite == 2){ //Assign write string
             strcpy(readWriteStr, "write");
         }
-        printf("OSS: PID %ld requesting %s of address %i at time %lf\n",childpid, readWriteStr, memory, currentTime);
+        printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memory, currentTime);
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
 
         if(memory == "read"){ //process is requesting to read
-            printf("OSS: Address %i in frame %i, giving data to PID %ld at time %lf\n", memory, 1, childpid, currentTime);
+            printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memory, 1, childpid, currentTime);
         }
         if(memory == "write"){ //Process is requesting to write
         for(i = 0; )
@@ -207,7 +207,7 @@ int main(int argc, char *argv[]){
                 printf("11OSS: Clearing frame %i and swapping in PIDs %d page %i\n", 1 ,childpid, page);
                 pritnf("OSS: Dirty bit of frame %i set, adding additional time to the clock\n", 1);
             }
-           printf("OSS: Indicating to %ld that write has happened to address %i\n", childpid, memory);
+           printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memory);
 
         }
         
