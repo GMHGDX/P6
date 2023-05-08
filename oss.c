@@ -95,11 +95,13 @@ int main(int argc, char *argv[]){
     struct Table writeToMem;
     printf("OSS - Wrote to the page table in memory\n");
     for(i = 1; i < 33; i++){
+        printf("writingggggggPage%i\t", i);
         writeToMem.pageTable[i] = pageTable[i];
+        printf("%i\t",pageTable[i]);
+        printf("\n");
     }
     writeToMem.currentTime = 0;
     *shm_ptr = writeToMem;
-     writeToMem = *shm_ptr;
 
     //intialize values for use in while loop
     double currentTime; //time going into shared memory
