@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
     struct Table readFromMem;
     readFromMem = *shm_ptr;
     Systime = readFromMem.currentTime;  
-    printf("Worker - System time from memory: %f\n", Systime);
+    printf("Worker - System time from memory: %lf\n", Systime);
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
