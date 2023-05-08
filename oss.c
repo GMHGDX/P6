@@ -203,7 +203,7 @@ int main(int argc, char *argv[]){
             if(memory is not in frame){ //The address is not in frame
                 printf("OSS: Address %i is not in a frame, pagefault\n", memory);
                 printf("11OSS: Clearing frame %i and swapping in PIDs %d page %i\n", 1 ,childpid, page);
-                pritnf("OSS: Dirty bit of frame %i set, adding additional time to the clock\n", 1);
+                printf("OSS: Dirty bit of frame %i set, adding additional time to the clock\n", 1);
             }
            printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memory);
 
