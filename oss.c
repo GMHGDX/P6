@@ -87,6 +87,7 @@ int main(int argc, char *argv[]){
     for(i = 1; i < 33; i++){
         printf("initPage%i\t", i);
         pageTable[i] = 1;
+        pageTable[32] = 59;
         printf("%i\t",pageTable[i]);
         printf("\n");
     }
@@ -127,7 +128,7 @@ int main(int argc, char *argv[]){
         for(i = 1; i < 33; i++){
             writeToMem.pageTable[i] = readFromMem.pageTable[i];
             printf("WRITTENP%i\t", i);
-            printf("%i\t",readFromMem.pageTable[i]);
+            printf("%i\t",writeToMem.pageTable[i]);
             printf("\n");
         }
         *shm_ptr = writeToMem;
