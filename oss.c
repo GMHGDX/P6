@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
     struct Table *shm_ptr = (struct Table*) (shmat(shm_id, NULL, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Shared memory attach failed\n"); exit(1); }
 
-    printf("OSS - shm_ptr is %i\n", shm_ptr);
+    printf("OSS - shm_ptr is %p\n", shm_ptr);
 
     //start the simulated system clock
     if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
