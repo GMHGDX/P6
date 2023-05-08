@@ -136,19 +136,19 @@ int main(int argc, char *argv[]){
         }
         *shm_ptr = writeToMem;
 
-        for(i = 0; i < 32; i++){
-            writeToMem.pageTable[i] = 5;
-        }
+        // for(i = 0; i < 32; i++){
+        //     writeToMem.pageTable[i] = 5;
+        // }
 
-        writeToMem = *shm_ptr;
+        // writeToMem = *shm_ptr;
 
-        printf("OSS - teSTUR System time from memory: %lf\n", writeToMem.currentTime);
-        for(i = 0; i < 32; i++){
-            writeToMem.pageTable[i];
-            printf("WROTTEMN%i\t", i+1);
-            printf("%i\t",writeToMem.pageTable[i]);
-            printf("\n");
-        }
+        // printf("OSS - teSTUR System time from memory: %lf\n", writeToMem.currentTime);
+        // for(i = 0; i < 32; i++){
+        //     writeToMem.pageTable[i];
+        //     printf("WROTTEMN%i\t", i+1);
+        //     printf("%i\t",writeToMem.pageTable[i]);
+        //     printf("\n");
+        // }
 
         if(numofchild < 2){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
