@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
     printf("Worker - Reading page table from memory:\n");
     for(i = 0; i < 32; i++){
         printf("readPage%i\t", i+1);
-        readFromMemWorker.pageTable[i] = pageTable[i];
+        //readFromMemWorker.pageTable[i] = pageTable[i];
         printf("%i\t", readFromMemWorker.pageTable[i]);
         printf("\n");
     }
