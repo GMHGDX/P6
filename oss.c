@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
     printf("--Page Table--\n");
     for(i = 1; i < 33; i++){
         printf("initPage%i\t", i);
-        pageTable[i] = 0;
+        pageTable[i] = 1;
         printf("%i\t",pageTable[i]);
         printf("\n");
     }
