@@ -197,12 +197,14 @@ int main(int argc, char *argv[]){
             printf("OSS: Address %i in frame %i, giving data to PID %ld at time %lf\n", memory, 1, childpid, currentTime);
         }
         if(memory == "write"){ //Process is requesting to write
+        for(i = 0; )
             if(memory is in frame){ //The address is in frame
                 printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memory, 1, currentTime);
             }
+        for(i = 0)
             if(memory is not in frame){ //The address is not in frame
                 printf("OSS: Address %i is not in a frame, pagefault\n", memory);
-                printf("OSS: Clearing frame %i and swapping in PIDs %ld page %i\n", 1 ,childpid, page);
+                printf("11OSS: Clearing frame %i and swapping in PIDs %d page %i\n", 1 ,childpid, page);
                 pritnf("OSS: Dirty bit of frame %i set, adding additional time to the clock\n", 1);
             }
            printf("OSS: Indicating to %ld that write has happened to address %i\n", childpid, memory);
