@@ -54,6 +54,7 @@ int main(int argc, char *argv[]){
 
 ///////////////////////////////////////////////////////////////////
     //Read table from memory
+    readFromMem = *shm_ptr;
     printf("Worker - Reading page table from memory:\n");
     for(i = 1; i < 33; i++){
         printf("readPage%i\t", i);
