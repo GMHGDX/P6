@@ -25,6 +25,7 @@ int main(int argc, char *argv[]){
 
     //grab sh_key from oss for shared memory
     int sh_key = atoi(argv[1]);
+    printf("THE KEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY: %i\n", sh_key);
 
     //Connect to message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
