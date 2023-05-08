@@ -132,6 +132,11 @@ int main(int argc, char *argv[]){
             printf("\n");
         }
         *shm_ptr = writeToMem;
+
+        for(i = 0; i < 32; i++){
+            writeToMem.pageTable[i] = 5;
+        }
+
         writeToMem = *shm_ptr;
 
         printf("OSS - teSTUR System time from memory: %lf\n", writeToMem.currentTime);
