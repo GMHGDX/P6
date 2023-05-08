@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
         if(page == i){
             writeToMemWorker.pageTable[i] = memoryAddress;
         } 
-        printf("%i\t", writeToMemWorkerWorker.pageTable[i]);
+        printf("%i\t", writeToMemWorker.pageTable[i]);
         printf("\n");
     }
     writeToMemWorker.currentTime = readFromMemWorker.currentTime;
