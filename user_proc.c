@@ -76,10 +76,10 @@ int main(int argc, char *argv[]){
         // if(page == (i + 1)){
         //     writeToMemWorker.pageTable[i] = memoryAddress;
         // } 
+        writeToMemWorker.pageTable[page-1] = memoryAddress;
         printf("%i\t", writeToMemWorker.pageTable[i]);
         printf("\n");
     }
-     writeToMemWorker.pageTable[page-1] = memoryAddress;
     writeToMemWorker.currentTime = readFromMemWorker.currentTime;
     *shm_ptr = writeToMemWorker;
 
