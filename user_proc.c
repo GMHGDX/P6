@@ -19,7 +19,7 @@ int main(int argc, char *argv[]){
     int Systime;
     int readWrite;
     int checkResponse;
-    int pageTable[32]; //Initialize page table
+    int pageTable[31]; //Initialize page table
 
     srand(time(0) + getpid()); //seed for random number generator
 
