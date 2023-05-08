@@ -132,6 +132,15 @@ int main(int argc, char *argv[]){
             printf("\n");
         }
         *shm_ptr = writeToMem;
+        writeToMem = *shm_ptr;
+
+        printf("OSS - teSTUR System time from memory: %lf\n", writeToMem.currentTime);
+        for(i = 0; i < 32; i++){
+            writeToMem.pageTable[i];
+            printf("WROTTEMN%i\t", i+1);
+            printf("%i\t",writeToMem.pageTable[i]);
+            printf("\n");
+        }
 
         if(numofchild < 1){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
