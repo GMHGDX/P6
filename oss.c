@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
     if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
 
     //intialize page table to zero
-    int pageTable[31]; //Initialize and write page table as all zeros
+    int pageTable[32]; //Initialize and write page table as all zeros
     int i;
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
