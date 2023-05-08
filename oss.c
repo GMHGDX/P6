@@ -74,10 +74,11 @@ int main(int argc, char *argv[]){
     if(shm_id <= 0) {fprintf(stderr,"ERROR: Failed to get shared memory, shared memory id = %i\n", shm_id); exit(1); }
 
     //attatch memory we allocated to our process and point pointer to it 
-    struct Table *shm_ptr = (struct Table*) (shmat(shm_id, NULL, 0));
+    struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Shared memory attach failed\n"); exit(1); }
 
     printf("OSS - shm_ptr is %p\n", shm_ptr);
+
 
     //start the simulated system clock
     if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
