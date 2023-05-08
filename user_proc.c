@@ -44,15 +44,6 @@ int main(int argc, char *argv[]){
     Systime = readFromMemWorker.currentTime;  
     printf("Worker - System time from memory: %i\n", Systime);
 
-    //request memory to random page
-    page = randomNumberGenerator(32); //max pages a process can request is 32
-    randomOffset = randomNumberGenerator(1023); //max offset is 1023
-    memoryAddress = (page * 1024) + randomOffset;
-
-    if(memoryAddress > 32000){ memoryAddress = 32000; } //if memory address exceeds 32000, keep it at 32000
-    printf("Worker - memoery address to insert is %i________________________________________________\n", memoryAddress);
-
-///////////////////////////////////////////////////////////////////
     //Read table from memory
     printf("Worker - Reading page table from memory:\n");
     for(i = 0; i < 32; i++){
@@ -62,23 +53,34 @@ int main(int argc, char *argv[]){
         printf("\n");
     }
 
-    //write new page table to memory
-    struct Table writeToMemWorker;
-    printf("Worker - Here is the page table in memory:\n");
+    //request memory to random page
+    page = randomNumberGenerator(32); //max pages a process can request is 32
+    randomOffset = randomNumberGenerator(1023); //max offset is 1023
+    memoryAddress = (page * 1024) + randomOffset;
 
-    //Print contents of page table
-    printf("--Page Table--\n");
-    for(i = 0; i < 32; i++){
-        printf("writePage%i\t", i+1);
-        writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
-        if(page == i){
-            writeToMemWorker.pageTable[i] = memoryAddress;
-        } 
-        printf("%i\t", writeToMemWorker.pageTable[i]);
-        printf("\n");
-    }
-    writeToMemWorker.currentTime = readFromMemWorker.currentTime;
-    *shm_ptr = writeToMemWorker;
+    if(memoryAddress > 32000){ memoryAddress = 32000; } //if memory address exceeds 32000, keep it at 32000
+    printf("Worker - memoery address to insert is %i________________________________________________\n", memoryAddress);
+
+///////////////////////////////////////////////////////////////////
+
+
+    // //write new page table to memory
+    // struct Table writeToMemWorker;
+    // printf("Worker - Here is the page table in memory:\n");
+
+    // //Print contents of page table
+    // printf("--Page Table--\n");
+    // for(i = 0; i < 32; i++){
+    //     printf("writePage%i\t", i+1);
+    //     writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
+    //     if(page == i){
+    //         writeToMemWorker.pageTable[i] = memoryAddress;
+    //     } 
+    //     printf("%i\t", writeToMemWorker.pageTable[i]);
+    //     printf("\n");
+    // }
+    // writeToMemWorker.currentTime = readFromMemWorker.currentTime;
+    // *shm_ptr = writeToMemWorker;
 ////////////////////////////////////////////////////////////////////////
 
     printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
