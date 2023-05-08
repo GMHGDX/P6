@@ -62,7 +62,7 @@ int randomNumberGenerator(int limit)
     return sec;
 }
 struct Table{
-    int pageTable[32];
+    int pageTable[33];
     int currentTime;
 };
 

@@ -96,13 +96,6 @@ int main(int argc, char *argv[]){
     printf("OSS - Worte the page table in memory\n");
     for(i = 1; i < 33; i++){
         writeToMem.pageTable[i] = pageTable[i];
-        if(i == 2){
-            writeToMem.pageTable[i] = 2;
-        }
-        printf("ISTWOHERE?%i\t", i);
-        printf("%i\t",writeToMem.pageTable[i]);
-        printf("\n");
-        
     }
     writeToMem.currentTime = 0;
     *shm_ptr = writeToMem;
@@ -219,7 +212,7 @@ int main(int argc, char *argv[]){
         printf("OSS - The buf.str data: %s\n", buf.strData);
         if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
         sleep(1);
-
+        
         break;
     }
     //remove this and below
