@@ -38,6 +38,8 @@ int main(int argc, char *argv[]){
     struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Child Shared memory attach failed\n"); exit(1); }
 
+    printf("Child - shm_ptr is %i\n", shm_ptr);
+
     //read system time from memory
     struct Table readFromMemWorker;
     readFromMemWorker = *shm_ptr;
