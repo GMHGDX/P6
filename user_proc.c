@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
     struct Table readFromMemWorker;
     readFromMemWorker = *shm_ptr;
     Systime = readFromMemWorker.currentTime;  
-    printf("Worker - System time from memory: %i\n", Systime);
+    printf("Worker - System time from memory: %ld\n", Systime);
 
 
 
