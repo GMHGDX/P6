@@ -95,10 +95,14 @@ int main(int argc, char *argv[]){
     struct Table writeToMem;
     printf("OSS - Worte the page table in memory\n");
     for(i = 1; i < 33; i++){
+        writeToMem.pageTable[i] = pageTable[i];
         if(i == 2){
             writeToMem.pageTable[i] = 2;
         }
-        writeToMem.pageTable[i] = pageTable[i];
+        printf("ISTWOHERE?%i\t", i);
+        printf("%i\t",writeToMem.pageTable[i]);
+        printf("\n");
+        
     }
     writeToMem.currentTime = 0;
     *shm_ptr = writeToMem;
