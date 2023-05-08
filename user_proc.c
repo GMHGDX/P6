@@ -68,14 +68,15 @@ int main(int argc, char *argv[]){
     struct Table writeToMemWorker;
     printf("Worker - Here is the page table in memory:\n");
 
+    writeToMemWorker.pageTable[page+1] = memoryAddress;
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
         printf("writePage%i\t", i+1);
         writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
-        if(page == i){
-            writeToMemWorker.pageTable[i] = memoryAddress;
-        } 
+        // if(page == (i + 1)){
+        //     writeToMemWorker.pageTable[i] = memoryAddress;
+        // } 
         printf("%i\t", writeToMemWorker.pageTable[i]);
         printf("\n");
     }
