@@ -136,21 +136,7 @@ int main(int argc, char *argv[]){
         }
         *shm_ptr = writeToMem;
 
-        // for(i = 0; i < 32; i++){
-        //     writeToMem.pageTable[i] = 5;
-        // }
-
-        // writeToMem = *shm_ptr;
-
-        // printf("OSS - teSTUR System time from memory: %lf\n", writeToMem.currentTime);
-        // for(i = 0; i < 32; i++){
-        //     writeToMem.pageTable[i];
-        //     printf("WROTTEMN%i\t", i+1);
-        //     printf("%i\t",writeToMem.pageTable[i]);
-        //     printf("\n");
-        // }
-
-        if(numofchild < 2){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild < 1){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
@@ -179,60 +165,58 @@ int main(int argc, char *argv[]){
         int readWrite;
         int page;
 
-        // Master: P2 requesting read of address 25237 at time xxx:xxx
-        // Master: Address 25237 in frame 13, giving data to P2 at time xxx:xxx
-        // Master: P5 requesting write of address 12345 at time xxx:xxx
-        // Master: Address 12345 in frame 203, writing data to frame at time xxx:xxx
-        // Master: P2 requesting write of address 03456 at time xxx:xxx
-        // Master: Address 12345 is not in a frame, pagefault
-        // Master: Clearing frame 107 and swapping in p2 page 3
-        // Master: Dirty bit of frame 107 set, adding additional time to the clock
-        // Master: Indicating to P2 that write has happened to address 03456
-        // Current memory layout at time xxx:xxx is:
-        // Occupied DirtyBit HeadOfFIFO
-        // Frame 0: No 0
-        // Frame 1: Yes 1
-        // Frame 2: Yes 0 *
-        // Frame 3: Yes 1
-
-        //seperate the message by white space and assign it ot page number, memory address, and read/write
+        //Seperate the message by white space and assign it ot page number, memory address, and read/write
         char * procChoice = strtok(buf.strData, " ");
         while( procChoice != NULL ) {
             printf("message is now: %s\n", procChoice);
             seperate++;
             if(seperate == 1){
-                memory = atoi(procChoice); //assign second as an integer
+                memory = atoi(procChoice); //Assign second as an integer
                 procChoice = strtok(NULL, " ");
             }
             if(seperate == 2){
-                readWrite = atoi(procChoice); //assign nanosecond as an integer
+                readWrite = atoi(procChoice); //Assign nanosecond as an integer
                 procChoice = strtok(NULL, " ");
             }
             if(seperate == 3){
-                page = atoi(procChoice); //assign nanosecond as an integer
+                page = atoi(procChoice); //Assign nanosecond as an integer
                 procChoice = strtok(NULL, " ");
                 break;
             }   
         }
-        if(readWrite == 1){ //assign read string
+        if(readWrite == 1){ //Assign read string
             strcpy(readWriteStr, "read");
         }
-        if(readWrite == 2){ //assign write string
+        if(readWrite == 2){ //Assign write string
             strcpy(readWriteStr, "write");
         }
         printf("OSS: PID %ld requesting %s of address %i at time %lf\n",childpid, readWriteStr, memory, currentTime);
-
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memory);
 
+        if(memory == "read"){ //process is requesting to read
+            printf("OSS: Address %i in frame %i, giving data to PID %ld at time %lf\n", memory, 1, childpid, currentTime);
+        }
+        if(memory == "write"){ //Process is requesting to write
+            if(memory is in frame){ //The address is in frame
+                printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memory, 1, currentTime);
+            }
+            if(memory is not in frame){ //The address is not in frame
+                printf("OSS: Address %i is not in a frame, pagefault\n", memory);
+                printf("OSS: Clearing frame %i and swapping in PIDs %ld page %i\n", 1 ,childpid, page);
+                pritnf("OSS: Dirty bit of frame %i set, adding additional time to the clock\n", 1);
+            }
+           printf("OSS: Indicating to %ld that write has happened to address %i\n", childpid, memory);
+
+        }
+        
         strcpy(buf.strData, "1");
         buf.intData = getpid();
         buf.mtype = childpid;
         printf("OSS - The buf.str data: %s\n", buf.strData);
         if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
         sleep(1);
-        if(numofchild == 3){
-           break; 
-        }
+
+        break; 
     }
     //remove this and below
     printf("deleting memory\n");
