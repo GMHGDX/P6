@@ -92,9 +92,6 @@ int main(int argc, char *argv[]){
     struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Shared memory attach failed\n"); exit(1); }
 
-    printf("OSS - shm_ptr is %p\n", shm_ptr);
-
-
     //start the simulated system clock
     if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
 
@@ -110,7 +107,6 @@ int main(int argc, char *argv[]){
 
     //Write page table to memory
     struct Table writeToMem;
-    printf("OSS - Wrote to the page table in memory\n");
     for(i = 0; i < 32; i++){
         writeToMem.pageTable[i] = pageTable[i];
     }
@@ -147,7 +143,6 @@ int main(int argc, char *argv[]){
         currentTime = sec + nano/BILLION;
 
         //Write the current time to memory for children to read
-        printf("OSS - System time from memory: %lf\n", currentTime);
         readFromMem = *shm_ptr;
         writeToMem.currentTime = currentTime;
         for(i = 0; i < 32; i++){
@@ -172,13 +167,9 @@ int main(int argc, char *argv[]){
 
                 return 1;
             }
-            if(childpid != 0 ){               
-                printf("OSS - Child PID: %d\n", childpid);
-            }
         }
 
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
-        printf("OSS - message recived is : %s\n", buf.strData);
         
         //Seperate the message by white space and assign it ot page number, memory address, and read/write
         procChoice = strtok(buf.strData, " ");
