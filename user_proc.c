@@ -46,14 +46,6 @@ int main(int argc, char *argv[]){
     Systime = readFromMemWorker.currentTime;  
     printf("Worker - System time from memory: %lf\n", Systime);
 
-    //Read table from memory
-    printf("Worker - Reading page table from memory:\n");
-    for(i = 0; i < 32; i++){
-        printf("readPage%i\t", i+1);
-        printf("%i\t", readFromMemWorker.pageTable[i]);
-        printf("\n");
-    }
-
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
     randomOffset = randomNumberGenerator(1023); //max offset is 1023

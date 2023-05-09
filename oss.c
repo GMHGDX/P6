@@ -45,9 +45,12 @@ int main(int argc, char *argv[]){
 
     //Initialize empty frame table (all zeros)
     int i, j;
+    printf("Occupied\tDirtyBit\tpage\tmemory\n");
     for(i = 0; i < 16; i++){
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
+            printf("%i\n",frameTable[i][j]);
+            //printf("\n");
         }
     }
 
@@ -148,9 +151,6 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         for(i = 0; i < 32; i++){
             writeToMem.pageTable[i] = readFromMem.pageTable[i];
-            printf("WRITTENP%i\t", i+1);
-            printf("%i\t",writeToMem.pageTable[i]);
-            printf("\n");
         }
         *shm_ptr = writeToMem;
 
@@ -276,17 +276,7 @@ int main(int argc, char *argv[]){
             printf("OSS - The buf.str data: %s\n", buf.strData);
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
             sleep(1);
-
-            for(i = 0; i < 16; i++){//print frame Table
-                printf("Frame %i:\t", i);
-                for(j = 0; j < 3; j++){
-                    frameTable[i][j] = 0;
-                }
-            }
         }
-        
-        
-
         break; 
     }
     //remove this and below
