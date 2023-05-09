@@ -175,7 +175,6 @@ int main(int argc, char *argv[]){
         procChoice = strtok(buf.strData, " ");
         seperate = 0;
         while( procChoice != NULL ) {
-            printf("message is now: %s\n", procChoice);
             seperate++;
             if(seperate == 1){
                 memoryAddress = atoi(procChoice); //Assign second as an integer
