@@ -45,8 +45,9 @@ int main(int argc, char *argv[]){
 
     //Initialize empty frame table (all zeros)
     int i, j;
-    printf("Occupied\tDirtyBit\tpage\t\tmemory\n");
+    printf("\tOccupied\tDirtyBit\tpage\t\tmemory\n");
     for(i = 0; i < 16; i++){
+        printf("Frame i:", i);
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
             printf("%i\t\t",frameTable[i][j]);
