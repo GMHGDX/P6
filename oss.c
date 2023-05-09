@@ -232,7 +232,6 @@ int main(int argc, char *argv[]){
             }
             else{ //The address is not in frame
                 printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put address\n", memoryAddress);
-                headpointer = 0;
                 notwritten = true;
                 while(notwritten){
                     if(frameTable[headpointer][1] == 1){
@@ -258,14 +257,14 @@ int main(int argc, char *argv[]){
                             buf.mtype = childpid;
                             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
                             headpointer++;
-                            
                         }else{
                             frameTable[headpointer][0] = 0; //Set occupied to 0 then move past this frame
                             headpointer++;
-                            if(headpointer >= 16){
-                                headpointer = 0;//Return headpointer to the top of the frameif it goes past 16
-                            }
                         }
+                        
+                    }
+                    if(headpointer >= 16){
+                        headpointer = 0;//Return headpointer to the top of the frameif it goes past 16
                     }
                 }
                 printf("OSS: Head is now at frame %i\n", headpointer);
