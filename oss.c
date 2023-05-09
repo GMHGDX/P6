@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
     int i, j;
     printf("\tOccupied\tDirtyBit\tpage\t\tmemory\n");
     for(i = 0; i < 16; i++){
-        printf("Frame i:", i);
+        printf("Frame %i:", i);
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
             printf("%i\t\t",frameTable[i][j]);
