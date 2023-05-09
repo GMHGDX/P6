@@ -128,6 +128,7 @@ int main(int argc, char *argv[]){
     int inFrame = 0;
     int headpointer = 0;
     bool notwritten = false;
+    char frameString[50];
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
@@ -247,15 +248,15 @@ int main(int argc, char *argv[]){
                             frameTable[headpointer][1] = 0; //dirty bit
                             frameTable[headpointer][0] = 1; //unoccupied
 
-                            strcpy(buf.strData, headpointer);
-                            printf("OSS - The buf.str data: %s\n", buf.strData);
-                            
                             printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
                             //Send message back to user process
                             printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
-                            
+
+                            snprintf(frameString, sizeof(frameString), "%i", headpointer);
+                            strcpy(buf.strData, headpointer);
                             buf.intData = getpid();
                             buf.mtype = childpid;
+                            printf("OSS - The buf.str data: %s\n", buf.strData);
                             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
                             
                         }else{
