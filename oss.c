@@ -251,9 +251,9 @@ int main(int argc, char *argv[]){
                             //Send message back to user process
                             printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
                             strcpy(buf.strData, headpointer);
+                            printf("OSS - The buf.str data: %s\n", buf.strData);
                             buf.intData = getpid();
                             buf.mtype = childpid;
-                            printf("OSS - The buf.str data: %s\n", buf.strData);
                             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
                             
                         }else{
