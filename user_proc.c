@@ -82,12 +82,12 @@ int main(int argc, char *argv[]){
     buf.mtype = (long)getppid();
     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
 
+    if(readWrite == 2){
     //recieve frame table from OSS
     if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
         { perror("2 failed to receive message from parent\n"); exit(1); }
-    frameNumber = atoi(buf.strData);
-
-    if (frameNumber > 0){
+        
+        frameNumber = atoi(buf.strData);
         //write new page table to memory
         struct Table writeToMemWorker;
         //Print contents of page table
