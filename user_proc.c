@@ -37,8 +37,6 @@ int main(int argc, char *argv[]){
     struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Child Shared memory attach failed\n"); exit(1); }
 
-    printf("Child - shm_ptr is %p\n", shm_ptr);
-
     //read system time from memory
     struct Table readFromMemWorker;
     readFromMemWorker = *shm_ptr;
@@ -50,14 +48,9 @@ int main(int argc, char *argv[]){
     memoryAddress = (page * 1024) + randomOffset;
 
     if(memoryAddress > 32000){ memoryAddress = 32000; } //if memory address exceeds 32000, keep it at 32000
-    printf("Worker - memoery address to insert is %i________________________________________________\n", memoryAddress);
-
-///////////////////////////////////////////////////////////////////
 
     //write new page table to memory
     struct Table writeToMemWorker;
-    printf("Worker - Here is the page table in memory:\n");
-
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
@@ -73,19 +66,13 @@ int main(int argc, char *argv[]){
     writeToMemWorker.currentTime = readFromMemWorker.currentTime;
     *shm_ptr = writeToMemWorker;
 
-////////////////////////////////////////////////////////////////////////
-
-    printf("Worker - This is your page number: %i. This is your memory address: %i\n", page, memoryAddress);
-
     //Process chooses if it will read or write (more inclined to read)
     readWrite = randomNumberGenerator(100);
     if(readWrite < 70){
         readWrite = 1; //requesting read
-        printf("Worker - The process is requesting read\n");
 
     } else{
         readWrite = 2; //requesting write
-        printf("Worker - The process is requesting write\n");
     }
     
     //Convert integer to string
@@ -104,7 +91,6 @@ int main(int argc, char *argv[]){
     strcat(together, permission);
     strcat(together, " ");
     strcat(together, pageNum);
-    printf("Worker - The string together with memory, permission, and page number: %s\n", together);
 
     //send our string to message queue
     strcpy(buf.strData, together); //copy our new string into string data buffer

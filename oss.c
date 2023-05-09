@@ -204,13 +204,17 @@ int main(int argc, char *argv[]){
         inFrame = 0;
         if(readWrite == 1){ //process is requesting to read
             for(i = 0; i < 16; i++){//Search frame Table for address
-                if(frameTable[i][3] == memoryAddress){
-                    frame = i; 
-                    inFrame++; 
-                    printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memoryAddress, frame, childpid, currentTime); 
-                    frameTable[i][0] = 1; // set occupied to 1/yes
-                    break;  
+                printf("Frame %i:", i);
+                for(j = 0; j < 4; j++){
+                    if(frameTable[i][j] == memoryAddress){
+                        frame = i; 
+                        inFrame++; 
+                        printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memoryAddress, frame, childpid, currentTime); 
+                        frameTable[i][0] = 1; // set occupied to 1/yes  
+                    }
+                    printf("%i\t\t",frameTable[i][j]);
                 }
+                printf("\n");
             }  
             if(inFrame == 0){
                 printf("OSS: Address %i is not in a frame, giving data to PID %d at time %lf\n", memoryAddress, childpid, currentTime);
