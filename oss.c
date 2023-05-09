@@ -246,7 +246,16 @@ int main(int argc, char *argv[]){
                             frameTable[headpointer][2] = page; //page number
                             frameTable[headpointer][1] = 0; //dirty bit
                             frameTable[headpointer][0] = 1; //unoccupied
+
                             printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
+                            //Send message back to user process
+                            printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
+                            strcpy(buf.strData, headpointer);
+                            buf.intData = getpid();
+                            buf.mtype = childpid;
+                            printf("OSS - The buf.str data: %s\n", buf.strData);
+                            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+                            
                         }else{
                             frameTable[headpointer][0] = 0; //Set occupied to 0 then move past this frame
                             headpointer++;

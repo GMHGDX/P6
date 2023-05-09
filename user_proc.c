@@ -19,6 +19,7 @@ int main(int argc, char *argv[]){
     //int Systime;
     int readWrite;
     int checkResponse;
+    int frameNumber;
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -48,23 +49,6 @@ int main(int argc, char *argv[]){
     memoryAddress = (page * 1024) + randomOffset;
 
     if(memoryAddress > 32000){ memoryAddress = 32000; } //if memory address exceeds 32000, keep it at 32000
-
-    //write new page table to memory
-    struct Table writeToMemWorker;
-    //Print contents of page table
-    printf("--Page Table--\n");
-    for(i = 0; i < 32; i++){
-        printf("Page%i\t", i+1);
-        writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
-        // if(page == (i + 1)){
-        //     writeToMemWorker.pageTable[i] = memoryAddress;
-        // } 
-        writeToMemWorker.pageTable[page-1] = memoryAddress;
-        printf("%i\t", writeToMemWorker.pageTable[i]);
-        printf("\n");
-    }
-    writeToMemWorker.currentTime = readFromMemWorker.currentTime;
-    *shm_ptr = writeToMemWorker;
 
     //Process chooses if it will read or write (more inclined to read)
     readWrite = randomNumberGenerator(100);
@@ -98,6 +82,26 @@ int main(int argc, char *argv[]){
     buf.mtype = (long)getppid();
     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
 
+    //recieve frame table from OSS
+    if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
+        { perror("2 failed to receive message from parent\n"); exit(1); }
+    frameNumber = atoi(buf.strData);
+
+    if (frameNumber > 0){
+        //write new page table to memory
+        struct Table writeToMemWorker;
+        //Print contents of page table
+        printf("--Page Table--\n");
+        for(i = 0; i < 32; i++){
+            printf("Page%i\t", i+1);
+            writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
+            writeToMemWorker.pageTable[page-1] = frameNumber;
+            printf("%i\t", writeToMemWorker.pageTable[i]);
+            printf("\n");
+        }
+        writeToMemWorker.currentTime = readFromMemWorker.currentTime;
+        *shm_ptr = writeToMemWorker;
+    }
     //Recieve message back from oss on when child should terminate
     while(1){
         if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
