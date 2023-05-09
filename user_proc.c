@@ -19,7 +19,6 @@ int main(int argc, char *argv[]){
     int Systime;
     int readWrite;
     int checkResponse;
-    int pageTable[32]; //Initialize page table
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -44,7 +43,6 @@ int main(int argc, char *argv[]){
     struct Table readFromMemWorker;
     readFromMemWorker = *shm_ptr;
     Systime = readFromMemWorker.currentTime;  
-    printf("Worker - System time from memory: %lf\n", Systime);
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
