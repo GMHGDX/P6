@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     int memoryAddress;
     int randomOffset;
     int page;
-    int Systime;
+    //int Systime;
     int readWrite;
     int checkResponse;
 
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
     //read system time from memory
     struct Table readFromMemWorker;
     readFromMemWorker = *shm_ptr;
-    Systime = readFromMemWorker.currentTime;  
+    //Systime = readFromMemWorker.currentTime;  
 
     //request memory to random page
     page = randomNumberGenerator(32); //max pages a process can request is 32
