@@ -49,9 +49,9 @@ int main(int argc, char *argv[]){
     for(i = 0; i < 16; i++){
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
-            printf("%i\n",frameTable[i][j]);
-            //printf("\n");
+            printf("%i\t",frameTable[i][j]);
         }
+        printf("\n");
     }
 
     //Create message queue
