@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
     int pageTable[32]; //Initialize and write page table as all zeros
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
-        printf("initPage%i\t", i+1);
+        printf("Page%i\t", i+1);
         pageTable[i] = -1;
         printf("%i\t",pageTable[i]);
         printf("\n");

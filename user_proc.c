@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
     //Print contents of page table
     printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
-        printf("writePage%i\t", i+1);
+        printf("Page%i\t", i+1);
         writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
         // if(page == (i + 1)){
         //     writeToMemWorker.pageTable[i] = memoryAddress;
