@@ -253,6 +253,8 @@ int main(int argc, char *argv[]){
                             printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
 
                             snprintf(frameString, sizeof(frameString), "%i", headpointer);
+                            printf("THIS is head of pointer! (%i)", headpointer);
+                            printf("THIS is head of pointer again in string! (%s)", frameString);
                             strcpy(buf.strData, frameString);
                             buf.intData = getpid();
                             buf.mtype = childpid;
