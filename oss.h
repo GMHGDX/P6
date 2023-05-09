@@ -34,11 +34,15 @@
 // Master: Indicating to P2 that write has happened to address 03456
 
 // Current memory layout at time xxx:xxx is:
-        // Occupied DirtyBit HeadOfFIFO
+        // Occupied DirtyBit page memory 
 // Frame 0: No      0
 // Frame 1: Yes     1
-// Frame 2: Yes     0        *
+// Frame 2: Yes     0        
 // Frame 3: Yes     1
+// if frametable[i][1] == 0{printf("No\n")}
+    // else{
+    //     printf("Yes\n")
+    // }
 
 // where Occupied indicates if we have a page in that frame, the * indicates that the next page will be replaced there,
 // and the dirty bit indicates if the frame has been written to.
