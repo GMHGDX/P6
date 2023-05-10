@@ -60,10 +60,12 @@ int main(int argc, char *argv[]){
                 for(i = 0; i < 16; i++){
                     printf("Frame %i:", i);
                     for(j = 0; j < 4; j++){
-                        if(frameTable[i][0] == 1){
-                            printf("Yes-");
-                        }if(frameTable[i][0] == 0){
-                            printf("no-");
+                        if(j = 0){
+                            if(frameTable[i][0] == 1){
+                                printf("Yes-");
+                            }if(frameTable[i][0] == 0){
+                                printf("no-");
+                            }
                         }
                         printf("%i\t\t",frameTable[i][j]);
                     }
