@@ -111,7 +111,6 @@ int main(int argc, char *argv[]){
         checkResponse = atoi(buf.strData);
 
         if(checkResponse == 1){
-            //printf("Worker - Child is terminating!\n");
             break;
         }
     }

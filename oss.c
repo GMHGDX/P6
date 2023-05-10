@@ -200,7 +200,7 @@ int main(int argc, char *argv[]){
         printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
         printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
 
-        //Read/write from/to frame table
+        //Read/write from/to frame table----------------------------------------------------------------------------------------------------
         inFrame = 0;
         if(readWrite == 1){ //process is requesting to read
             for(i = 0; i < 16; i++){//Search frame Table for address
@@ -213,9 +213,14 @@ int main(int argc, char *argv[]){
             }  
             if(inFrame == 0){
                 printf("OSS: Address %i is not in a frame, giving data to PID %d at time %lf\n", memoryAddress, childpid, currentTime);
-            } 
+            }
+            //Send message back to user process
+            strcpy(buf.strData, "1");
+            buf.intData = getpid();
+            buf.mtype = childpid;
+            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); } 
         }
-        if(readWrite == 2){ //Process is requesting to write
+        if(readWrite == 2){ //Process is requesting to write---------------------------------------------------------------------------------
             addressInFrame = 0;
             for(i = 0; i < 16; i++){//Search frame Table for address
                 if(frameTable[i][3] == memoryAddress){
@@ -256,12 +261,10 @@ int main(int argc, char *argv[]){
                             buf.intData = getpid();
                             buf.mtype = childpid;
                             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-                            headpointer++;
                         }else{
                             frameTable[headpointer][0] = 0; //Set occupied to 0 then move past this frame
                             headpointer++;
-                        }
-                        
+                        }   
                     }
                     if(headpointer >= 16){
                         headpointer = 0;//Return headpointer to the top of the frameif it goes past 16
@@ -274,7 +277,6 @@ int main(int argc, char *argv[]){
             strcpy(buf.strData, "1");
             buf.intData = getpid();
             buf.mtype = childpid;
-            printf("OSS - The buf.str data: %s\n", buf.strData);
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
             sleep(1);
         }
