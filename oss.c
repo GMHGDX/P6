@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
         }
         *shm_ptr = writeToMem;
 
-        if(numofchild <= 2 && limitReach >= currentTime){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 2){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
