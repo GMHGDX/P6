@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
         }
         *shm_ptr = writeToMem;
 
-        if(numofchild <= 2){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 3){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
@@ -312,7 +312,7 @@ int main(int argc, char *argv[]){
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
             sleep(1);
         }
-        if(numofchild == 2){
+        if(numofchild == 3){
             break;
         } 
     }
