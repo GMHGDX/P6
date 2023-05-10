@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
         }
         *shm_ptr = writeToMem;
 
-        if(numofchild < 1){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 2 && limitReach >= currentTime){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
@@ -268,7 +268,7 @@ int main(int argc, char *argv[]){
                             frameTable[headpointer][0] = 1; //unoccupied
 
                             printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
-                            printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
+                            printf("OSS: Indicating to PID %d that write has happened to address %i\n", childpid, memoryAddress);
 
                             //print the frame table
                             printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
@@ -312,15 +312,16 @@ int main(int argc, char *argv[]){
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
             sleep(1);
         }
-        break; 
+        if(numofchild == 2){
+            break;
+        } 
     }
-    //remove this and below
+
     printf("deleting memory\n");
     shmdt( shm_ptr ); // Detach from the shared memory segment
     shmctl( shm_id, IPC_RMID, NULL ); // Free shared memory segment shm_id 
 
-    //Removes the message queue immediately
-    if (msgctl(msqid, IPC_RMID, NULL) == -1) { perror("msgctl"); return EXIT_FAILURE; }
+    if (msgctl(msqid, IPC_RMID, NULL) == -1) { perror("msgctl"); return EXIT_FAILURE; } //Removes the message queue immediately
 
     fclose(fileLogging); //close the log file
     return 0;
