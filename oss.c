@@ -55,6 +55,21 @@ int main(int argc, char *argv[]){
         printf("\n");
     }
 
+    //Testing!!!!!!!!!!!!!!
+                printf("\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                for(i = 0; i < 16; i++){
+                    printf("Frame %i:", i);
+                    for(j = 0; j < 4; j++){
+                        if(frameTable[i][0] == 1){
+                            printf("Yes-");
+                        }if(frameTable[i][0] == 0){
+                            printf("no-");
+                        }
+                        printf("%i\t\t",frameTable[i][j]);
+                    }
+                    printf("\n");
+                }
+
     //Create message queue
     if((msqkey = ftok("oss.h", 'a')) == (key_t) -1){ perror("IPC error: ftok"); exit(1); } //Create key using ftok() for more uniquenes
     if((msqid = msgget(msqkey, PERMS | IPC_CREAT)) == -1) { perror("Failed to create new private message queue"); exit(1); } //open an existing message queue or create a new one
@@ -232,10 +247,24 @@ int main(int argc, char *argv[]){
                     break;     
                 }
             }
-            if(memoryAddress == addressInFrame){ //The address is in frame
+            if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
                 printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
+                // //print frame table
+                // printf("\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                // for(i = 0; i < 16; i++){
+                //     printf("Frame %i:", i);
+                //     for(j = 0; j < 4; j++){
+                //         if(frameTable[i][0] == 1){
+                //             printf("Yes-");
+                //         }else{
+                //             printf("no:");
+                //         }
+                //         printf("%i\t\t",frameTable[i][j]);
+                //     }
+                //     printf("\n");
+                // }
             }
-            else{ //The address is not in frame
+            else{ //The address is not in frame////////////////////////////////////////////////////////////////////////////////////
                 printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put address\n", memoryAddress);
                 notwritten = true;
                 while(notwritten){
