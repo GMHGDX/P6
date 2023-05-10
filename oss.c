@@ -228,15 +228,15 @@ int main(int argc, char *argv[]){
                     frame = i; 
                     frameTable[i][0] = 1; // set occupied to 1/yes
                     frameTable[i][1] = 1; // set dirtybit
-                    frameTable[i][2] = page;
+                    frameTable[i][2] = page; //set new page
                     break;     
                 }
             }
             if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
                 printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
-                printf("\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
                 for(i = 0; i < 16; i++){
-                    printf("Frame %i:", i);
+                    printf("Frame %i:\t", i);
                     for(j = 0; j < 4; j++){
                         if(j == 0){
                             if(frameTable[i][0] == 1){
@@ -251,7 +251,7 @@ int main(int argc, char *argv[]){
                 }
             }
             else{ //The address is not in frame////////////////////////////////////////////////////////////////////////////////////
-                printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put address\n", memoryAddress);
+                printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put the new address\n", memoryAddress);
                 notwritten = true;
                 while(notwritten){
                     if(frameTable[headpointer][1] == 1){
@@ -268,9 +268,25 @@ int main(int argc, char *argv[]){
                             frameTable[headpointer][0] = 1; //unoccupied
 
                             printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
-                            
-                            //Send message back to user process
                             printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
+
+                            //print the frame table
+                            for(i = 0; i < 16; i++){
+                                printf("Frame %i:\t", i);
+                                for(j = 0; j < 4; j++){
+                                    if(j == 0){
+                                        if(frameTable[i][0] == 1){
+                                            printf("Yes-");
+                                        }if(frameTable[i][0] == 0){
+                                            printf("no-");
+                                        }
+                                    }
+                                    printf("%i\t\t",frameTable[i][j]);
+                                }
+                                printf("\n");
+                            }
+
+                            //Send message back to user process
                             snprintf(frameString, sizeof(frameString), "%i", headpointer);
                             strcpy(buf.strData, frameString);
                             buf.intData = getpid();
