@@ -271,6 +271,7 @@ int main(int argc, char *argv[]){
                             printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
 
                             //print the frame table
+                            printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
                             for(i = 0; i < 16; i++){
                                 printf("Frame %i:\t", i);
                                 for(j = 0; j < 4; j++){
