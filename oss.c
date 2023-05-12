@@ -45,12 +45,14 @@ int main(int argc, char *argv[]){
 
     //Initialize empty frame table (all zeros)
     int i, j;
-    printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+    printf("\t\tOccupied\tDirtyBit\tpage\n");
     for(i = 0; i < 16; i++){
         printf("Frame %i:\t", i);
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
-            printf("%i\t\t",frameTable[i][j]);
+            if(j!=3){
+                printf("%i\t\t",frameTable[i][j]);
+            }
         }
         printf("\n");
     }
@@ -218,7 +220,7 @@ int main(int argc, char *argv[]){
                 }
                 if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
                     printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
-                    printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                    printf("\t\tOccupied\tDirtyBit\tpage\n");
                     for(i = 0; i < 16; i++){
                         printf("Frame %i:\t", i);
                         for(j = 0; j < 4; j++){
@@ -229,7 +231,9 @@ int main(int argc, char *argv[]){
                                     printf("no-");
                                 }
                             }
-                            printf("%i\t\t",frameTable[i][j]);
+                            if(j!=3){
+                                printf("%i\t\t",frameTable[i][j]);
+                            }
                         }
                         printf("\n");
                     }
@@ -250,7 +254,7 @@ int main(int argc, char *argv[]){
                     printf("OSS: Indicating to PID %d that write has happened to address %i\n", childpid, memoryAddress);
 
                     //print the frame table
-                    printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                    printf("\t\tOccupied\tDirtyBit\tpage\n");
                     for(i = 0; i < 16; i++){
                         printf("Frame %i:\t", i);
                         for(j = 0; j < 4; j++){
@@ -261,7 +265,9 @@ int main(int argc, char *argv[]){
                                     printf("no-");
                                 }
                             }
-                            printf("%i\t\t",frameTable[i][j]);
+                            if(j!=3){
+                                printf("%i\t\t",frameTable[i][j]);
+                            }
                         }
                         printf("\n");
                     }
