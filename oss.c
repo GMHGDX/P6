@@ -312,7 +312,7 @@ int main(int argc, char *argv[]){
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
             sleep(1);
         }
-        if(numofchild == 3){
+        if(numofchild == 1){
             break;
         } 
     }
