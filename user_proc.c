@@ -50,8 +50,6 @@ int main(int argc, char *argv[]){
 
     readFromMemWorker = *shm_ptr;
     //Systime = readFromMemWorker.currentTime;  
-
-
     int loopAgain;
     int firstLoop = 0;
     char memory[50];
@@ -62,8 +60,8 @@ int main(int argc, char *argv[]){
     int dead = 404;
 
     while(1){ //Check to terminate after it loops 1000 times, randomly terminate
-        loopAgain = randomNumberGenerator(2);
-        if(loopAgain == 1 || firstLoop == 0){////////////////////////////////////////////////////////////////////////////////////////////////////
+        loopAgain = randomNumberGenerator(100);
+        if(loopAgain <= 70 || firstLoop == 0){////////////////////////////////////////////////////////////////////////////////////////////////////
             printf("Worker - Child Decide to loop again!\n");
             firstLoop++;
             //request memory to random page
@@ -118,22 +116,9 @@ int main(int argc, char *argv[]){
                 writeToMemWorker.currentTime = readFromMemWorker.currentTime;
                 *shm_ptr = writeToMemWorker;
             }
-            //Recieve message back from oss on when child should terminate
-            // while(1){
-            //     if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
-            //     {
-            //         perror("2 failed to receive message from parent\n"); 
-            //         exit(1);
-            //     }
-            //     checkResponse = atoi(buf.strData);
-
-            //     if(checkResponse == 33){
-            //         break;
-            //     }
-            // }
             sleep(1);
         }
-        if(loopAgain == 2){///////////////////////////////////////////////////////////////
+        if(loopAgain > 70){///////////////////////////////////////////////////////////////
             printf("Worker - Child is terminating!\n");
             snprintf(deadProc, sizeof(deadProc), "%i", dead);
             strcpy(buf.strData, deadProc); //copy our new string into string data buffer
