@@ -46,6 +46,7 @@ int main(int argc, char *argv[]){
         printf("%i\t",pageTable[i]);
         printf("\n");
     }
+    printf("NEW PROCESS TABLE!^^\n");
 
     //read system time from memory
     struct Table readFromMemWorker;
