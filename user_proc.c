@@ -100,7 +100,6 @@ int main(int argc, char *argv[]){
             frameNumber = atoi(buf.strData);
 
             if(readWrite == 2 && frameNumber <= 32){  //recieve frame from OSS
-                printf("FRAME NUMBER RECIEVEDEDEDED: %i\n", frameNumber);
 
                 //Print contents of page table
                 printf("--Page Table--\n");
@@ -116,11 +115,11 @@ int main(int argc, char *argv[]){
         }
         if(loopAgain > 70){///////////////////////////////////////////////////////////////
             printf("Worker: Child is terminating!\n");
-            snprintf(deadProc, sizeof(deadProc), "%i", dead);
-            strcpy(buf.strData, deadProc); //copy our new string into string data buffer
-            buf.intData = getpid();
-            buf.mtype = (long)getppid();
-            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("W1 msgsnd from child to parent failed\n"); exit(1); }
+            // snprintf(deadProc, sizeof(deadProc), "%i", dead);
+            // strcpy(buf.strData, deadProc); //copy our new string into string data buffer
+            // buf.intData = getpid();
+            // buf.mtype = (long)getppid();
+            // if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("W1 msgsnd from child to parent failed\n"); exit(1); }
             break;
         }
     }
