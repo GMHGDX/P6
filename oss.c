@@ -131,7 +131,7 @@ int main(int argc, char *argv[]){
         if(numofchild <= 2 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
-            printf("CURRENT NUM OF CHILD-----------------: %i", numofchild);
+            printf("CURRENT NUM OF CHILD-----------------: %i\n", numofchild);
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
 
