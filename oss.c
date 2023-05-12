@@ -104,7 +104,6 @@ int main(int argc, char *argv[]){
     int numofchild = 0;
     int milliSec = 0; //milliseconds used in time limit
     char readWriteStr[10];
-    struct Table readFromMem; // To read from shared ememory
     int seperate = 0;
     int memoryAddress;
     int readWrite;
