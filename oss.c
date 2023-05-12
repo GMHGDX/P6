@@ -298,7 +298,7 @@ int main(int argc, char *argv[]){
                 sleep(1);     
             }
         }
-        if(numofchild == 2){
+        if(numofchild == 3){
             break;
         } 
     }
