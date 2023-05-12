@@ -113,6 +113,8 @@ int main(int argc, char *argv[]){
     int headpointer = 0;
     bool notwritten = false;
     char frameString[50];
+    int dead;
+    int processRunning = 0;
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
@@ -131,8 +133,9 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         *shm_ptr = writeToMem;
 
-        if(numofchild <= 0){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 1 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
+            processRunning++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
 
@@ -150,7 +153,14 @@ int main(int argc, char *argv[]){
             }
         }
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
-        
+        if(buf.strData == "404"){
+            //check if a process is dead (skull emoji)
+            msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0);
+            dead = atoi(buf.StrData);
+            if(dead == 404){
+                processRunning--;
+            }
+        }
         //Seperate the message by white space and assign it ot page number, memory address, and read/write
         procChoice = strtok(buf.strData, " ");
         seperate = 0;
@@ -289,7 +299,7 @@ int main(int argc, char *argv[]){
             buf.intData = getpid();
             buf.mtype = childpid;
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-            sleep(1);
+            sleep(1);     
         }
         if(numofchild == 2){
             break;

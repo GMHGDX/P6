@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
     //read system time from memory
     struct Table readFromMemWorker;
     struct Table writeToMemWorker;
-    
+
     readFromMemWorker = *shm_ptr;
     //Systime = readFromMemWorker.currentTime;  
 
@@ -60,7 +60,9 @@ int main(int argc, char *argv[]){
     char memory[50];
     char permission[50];
     char pageNum[50];
+    char deadProc[50];
     char *together;
+    int dead = 404;
 
     while(1){ //Check to terminate after it loops 1000 times, randomly terminate
         loopAgain = randomNumberGenerator(2);
@@ -133,6 +135,11 @@ int main(int argc, char *argv[]){
         }
         if(loopAgain == 2){///////////////////////////////////////////////////////////////
             printf("Worker - Child is terminating!\n");
+            snprintf(deadProc, sizeof(deadProc), "%i", dead);
+            strcpy(buf.strData, deadProc); //copy our new string into string data buffer
+            buf.intData = getpid();
+            buf.mtype = (long)getppid();
+            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
             break;
         }
     }
