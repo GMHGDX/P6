@@ -128,6 +128,9 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         *shm_ptr = writeToMem;
 
+        if(currentTime >= 3 || (processRunning == 0 && numofchild == 101)){
+            break;
+        }
         if(numofchild <= 0 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
@@ -277,9 +280,6 @@ int main(int argc, char *argv[]){
                     printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
                 }
             }
-        }
-        if(currentTime >= 3 || (processRunning == 0 && numofchild == 101)){
-            break;
         } 
     }
 
