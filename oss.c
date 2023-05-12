@@ -283,7 +283,7 @@ int main(int argc, char *argv[]){
                 }
             }
         }
-        if(currentTime >= 3 || (processRunning == 0 && numofchild == 10)){
+        if(currentTime >= 3 || (processRunning == 0 && numofchild == 11)){
             break;
         } 
     }
