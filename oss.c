@@ -132,7 +132,7 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         *shm_ptr = writeToMem;
 
-        if(numofchild <= 20 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 100 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
@@ -275,18 +275,8 @@ int main(int argc, char *argv[]){
                     printf("OSS: Head is now at frame %i\n", headpointer); //print head of process
                     printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
                 }
-                // if(readWrite == 1){
-                //     //Send message back to user process
-                   
-                //     strcpy(buf.strData, "33");
-                //     buf.intData = getpid();
-                //     buf.mtype = childpid;
-                //     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-                //     sleep(1);     
-                // }
-            }
         }
-        if(processRunning == 18){
+        if(currentTime >= 3){
             break;
         } 
     }
