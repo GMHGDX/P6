@@ -120,19 +120,19 @@ int main(int argc, char *argv[]){
                 writeToMemWorker.currentTime = readFromMemWorker.currentTime;
                 *shm_ptr = writeToMemWorker;
             }
-            // //Recieve message back from oss on when child should terminate
-            // while(1){
-            //     if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
-            //     {
-            //         perror("2 failed to receive message from parent\n"); 
-            //         exit(1);
-            //     }
-            //     checkResponse = atoi(buf.strData);
+            //Recieve message back from oss on when child should terminate
+            while(1){
+                if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
+                {
+                    perror("2 failed to receive message from parent\n"); 
+                    exit(1);
+                }
+                checkResponse = atoi(buf.strData);
 
-            //     if(checkResponse == 33){
-            //         break;
-            //     }
-            // }
+                if(checkResponse == 33){
+                    break;
+                }
+            }
         }
         if(loopAgain == 2){///////////////////////////////////////////////////////////////
             printf("Worker - Child is terminating!\n");
