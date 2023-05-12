@@ -153,14 +153,15 @@ int main(int argc, char *argv[]){
             }
         }
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
-        if(buf.strData == "404"){
+         dead = atoi(buf.strData);
+        //if(buf.strData == "404"){
             //check if a process is dead (skull emoji)
-            msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0);
-            dead = atoi(buf.strData);
+            //msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0);
+            //dead = atoi(buf.strData);
             if(dead == 404){
                 processRunning--;
             }
-        }
+        //}
         //Seperate the message by white space and assign it ot page number, memory address, and read/write
         procChoice = strtok(buf.strData, " ");
         seperate = 0;
