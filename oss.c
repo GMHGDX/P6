@@ -275,6 +275,7 @@ int main(int argc, char *argv[]){
                     printf("OSS: Head is now at frame %i\n", headpointer); //print head of process
                     printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
                 }
+            }
         }
         if(currentTime >= 3){
             break;
