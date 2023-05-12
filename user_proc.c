@@ -107,6 +107,7 @@ int main(int argc, char *argv[]){
             if(readWrite == 2){  //recieve frame table from OSS
                 if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
                 frameNumber = atoi(buf.strData);
+                printf("FRAME NUMBER RECIEVEDEDEDED: %i\n", frameNumber);
 
                 //Print contents of page table
                 printf("--Page Table--\n");
