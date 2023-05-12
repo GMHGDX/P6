@@ -116,7 +116,6 @@ int main(int argc, char *argv[]){
                 writeToMemWorker.currentTime = readFromMemWorker.currentTime;
                 *shm_ptr = writeToMemWorker;
             }
-            sleep(1);
         }
         if(loopAgain > 70){///////////////////////////////////////////////////////////////
             printf("Worker - Child is terminating!\n");
