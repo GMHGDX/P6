@@ -286,7 +286,7 @@ int main(int argc, char *argv[]){
                 // }
             }
         }
-        if(numofchild == 4){
+        if(processRunning == 18){
             break;
         } 
     }
