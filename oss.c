@@ -128,7 +128,7 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         *shm_ptr = writeToMem;
 
-        if(numofchild <= 100 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 2 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
             printf("CURRENT NUM OF CHILD-----------------: %i", numofchild);
