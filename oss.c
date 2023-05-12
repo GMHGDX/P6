@@ -153,149 +153,150 @@ int main(int argc, char *argv[]){
             }
         }
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
-         dead = atoi(buf.strData);
+        dead = atoi(buf.strData);
         if(dead == 404){
             processRunning--;
-        }
-        //Seperate the message by white space and assign it ot page number, memory address, and read/write
-        procChoice = strtok(buf.strData, " ");
-        seperate = 0;
-        while( procChoice != NULL ) {
-            seperate++;
-            if(seperate == 1){
-                memoryAddress = atoi(procChoice); //Assign second as an integer
-                procChoice = strtok(NULL, " ");
+        }else{
+            //Seperate the message by white space and assign it ot page number, memory address, and read/write
+            procChoice = strtok(buf.strData, " ");
+            seperate = 0;
+            while( procChoice != NULL ) {
+                seperate++;
+                if(seperate == 1){
+                    memoryAddress = atoi(procChoice); //Assign second as an integer
+                    procChoice = strtok(NULL, " ");
+                }
+                if(seperate == 2){
+                    readWrite = atoi(procChoice); //Assign nanosecond as an integer
+                    procChoice = strtok(NULL, " ");
+                }
+                if(seperate == 3){
+                    page = atoi(procChoice); //Assign nanosecond as an integer
+                    procChoice = strtok(NULL, " ");
+                    break;
+                }   
             }
-            if(seperate == 2){
-                readWrite = atoi(procChoice); //Assign nanosecond as an integer
-                procChoice = strtok(NULL, " ");
+            if(readWrite == 1){ //Assign read string
+                strcpy(readWriteStr, "read");
             }
-            if(seperate == 3){
-                page = atoi(procChoice); //Assign nanosecond as an integer
-                procChoice = strtok(NULL, " ");
-                break;
-            }   
-        }
-        if(readWrite == 1){ //Assign read string
-            strcpy(readWriteStr, "read");
-        }
-        if(readWrite == 2){ //Assign write string
-            strcpy(readWriteStr, "write");
-        }
-        printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
-        printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
+            if(readWrite == 2){ //Assign write string
+                strcpy(readWriteStr, "write");
+            }
+            printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
+            printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
 
-        //Read/write from/to frame table----------------------------------------------------------------------------------------------------
-        inFrame = 0;
-        if(readWrite == 1){ //process is requesting to read
-            for(i = 0; i < 16; i++){//Search frame Table for address
-                if(frameTable[i][3] == memoryAddress){
-                    frame = i; 
-                    inFrame++; 
-                    printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memoryAddress, frame, childpid, currentTime); 
-                    frameTable[i][0] = 1; // set occupied to 1/yes  
-                }
-            }  
-            if(inFrame == 0){
-                printf("OSS: Address %i is not in a frame, giving data to PID %d at time %lf\n", memoryAddress, childpid, currentTime);
-            }
-            //Send message back to user process
-            strcpy(buf.strData, "1");
-            buf.intData = getpid();
-            buf.mtype = childpid;
-            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); } 
-        }
-        if(readWrite == 2){ //Process is requesting to write---------------------------------------------------------------------------------
-            addressInFrame = 0;
-            for(i = 0; i < 16; i++){//Search frame Table for address
-                if(frameTable[i][3] == memoryAddress){
-                    addressInFrame = memoryAddress;
-                    frame = i; 
-                    frameTable[i][0] = 1; // set occupied to 1/yes
-                    frameTable[i][1] = 1; // set dirtybit
-                    frameTable[i][2] = page; //set new page
-                    break;     
-                }
-            }
-            if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
-                printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
-                printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
-                for(i = 0; i < 16; i++){
-                    printf("Frame %i:\t", i);
-                    for(j = 0; j < 4; j++){
-                        if(j == 0){
-                            if(frameTable[i][0] == 1){
-                                printf("Yes-");
-                            }if(frameTable[i][0] == 0){
-                                printf("no-");
-                            }
-                        }
-                        printf("%i\t\t",frameTable[i][j]);
+            //Read/write from/to frame table----------------------------------------------------------------------------------------------------
+            inFrame = 0;
+            if(readWrite == 1){ //process is requesting to read
+                for(i = 0; i < 16; i++){//Search frame Table for address
+                    if(frameTable[i][3] == memoryAddress){
+                        frame = i; 
+                        inFrame++; 
+                        printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memoryAddress, frame, childpid, currentTime); 
+                        frameTable[i][0] = 1; // set occupied to 1/yes  
                     }
-                    printf("\n");
+                }  
+                if(inFrame == 0){
+                    printf("OSS: Address %i is not in a frame, giving data to PID %d at time %lf\n", memoryAddress, childpid, currentTime);
                 }
+                //Send message back to user process
+                strcpy(buf.strData, "1");
+                buf.intData = getpid();
+                buf.mtype = childpid;
+                if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); } 
             }
-            else{ //The address is not in frame////////////////////////////////////////////////////////////////////////////////////
-                printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put the new address\n", memoryAddress);
-                notwritten = true;
-                while(notwritten){
-                    if(frameTable[headpointer][1] == 1){
-                        printf("OSS: Head found at dirty bit. Dirty bit of frame %i reset, adding additional time to the clock\n", 1);
-                        frameTable[headpointer][1] = 0; //reset dirty bit
-                        frameTable[headpointer][0] = 1; //set occupied bit
-                        headpointer++;
-                    }else{
-                        if(frameTable[headpointer][0] == 0){
-                            notwritten = false; //Found a palce to write
-                            frameTable[headpointer][3] = memoryAddress; //memory address
-                            frameTable[headpointer][2] = page; //page number
-                            frameTable[headpointer][1] = 0; //dirty bit
-                            frameTable[headpointer][0] = 1; //unoccupied
-
-                            printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
-                            printf("OSS: Indicating to PID %d that write has happened to address %i\n", childpid, memoryAddress);
-
-                            //print the frame table
-                            printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
-                            for(i = 0; i < 16; i++){
-                                printf("Frame %i:\t", i);
-                                for(j = 0; j < 4; j++){
-                                    if(j == 0){
-                                        if(frameTable[i][0] == 1){
-                                            printf("Yes-");
-                                        }if(frameTable[i][0] == 0){
-                                            printf("no-");
-                                        }
-                                    }
-                                    printf("%i\t\t",frameTable[i][j]);
+            if(readWrite == 2){ //Process is requesting to write---------------------------------------------------------------------------------
+                addressInFrame = 0;
+                for(i = 0; i < 16; i++){//Search frame Table for address
+                    if(frameTable[i][3] == memoryAddress){
+                        addressInFrame = memoryAddress;
+                        frame = i; 
+                        frameTable[i][0] = 1; // set occupied to 1/yes
+                        frameTable[i][1] = 1; // set dirtybit
+                        frameTable[i][2] = page; //set new page
+                        break;     
+                    }
+                }
+                if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
+                    printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
+                    printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                    for(i = 0; i < 16; i++){
+                        printf("Frame %i:\t", i);
+                        for(j = 0; j < 4; j++){
+                            if(j == 0){
+                                if(frameTable[i][0] == 1){
+                                    printf("Yes-");
+                                }if(frameTable[i][0] == 0){
+                                    printf("no-");
                                 }
-                                printf("\n");
                             }
-
-                            //Send message back to user process
-                            snprintf(frameString, sizeof(frameString), "%i", headpointer);
-                            strcpy(buf.strData, frameString);
-                            buf.intData = getpid();
-                            buf.mtype = childpid;
-                            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-                        }else{
-                            frameTable[headpointer][0] = 0; //Set occupied to 0 then move past this frame
-                            headpointer++;
-                        }   
-                    }
-                    if(headpointer >= 16){
-                        headpointer = 0;//Return headpointer to the top of the frameif it goes past 16
+                            printf("%i\t\t",frameTable[i][j]);
+                        }
+                        printf("\n");
                     }
                 }
-                printf("OSS: Head is now at frame %i\n", headpointer);
+                else{ //The address is not in frame////////////////////////////////////////////////////////////////////////////////////
+                    printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put the new address\n", memoryAddress);
+                    notwritten = true;
+                    while(notwritten){
+                        if(frameTable[headpointer][1] == 1){
+                            printf("OSS: Head found at dirty bit. Dirty bit of frame %i reset, adding additional time to the clock\n", 1);
+                            frameTable[headpointer][1] = 0; //reset dirty bit
+                            frameTable[headpointer][0] = 1; //set occupied bit
+                            headpointer++;
+                        }else{
+                            if(frameTable[headpointer][0] == 0){
+                                notwritten = false; //Found a palce to write
+                                frameTable[headpointer][3] = memoryAddress; //memory address
+                                frameTable[headpointer][2] = page; //page number
+                                frameTable[headpointer][1] = 0; //dirty bit
+                                frameTable[headpointer][0] = 1; //unoccupied
+
+                                printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
+                                printf("OSS: Indicating to PID %d that write has happened to address %i\n", childpid, memoryAddress);
+
+                                //print the frame table
+                                printf("\t\tOccupied\tDirtyBit\tpage\t\tmemory\n");
+                                for(i = 0; i < 16; i++){
+                                    printf("Frame %i:\t", i);
+                                    for(j = 0; j < 4; j++){
+                                        if(j == 0){
+                                            if(frameTable[i][0] == 1){
+                                                printf("Yes-");
+                                            }if(frameTable[i][0] == 0){
+                                                printf("no-");
+                                            }
+                                        }
+                                        printf("%i\t\t",frameTable[i][j]);
+                                    }
+                                    printf("\n");
+                                }
+
+                                //Send message back to user process
+                                snprintf(frameString, sizeof(frameString), "%i", headpointer);
+                                strcpy(buf.strData, frameString);
+                                buf.intData = getpid();
+                                buf.mtype = childpid;
+                                if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+                            }else{
+                                frameTable[headpointer][0] = 0; //Set occupied to 0 then move past this frame
+                                headpointer++;
+                            }   
+                        }
+                        if(headpointer >= 16){
+                            headpointer = 0;//Return headpointer to the top of the frameif it goes past 16
+                        }
+                    }
+                    printf("OSS: Head is now at frame %i\n", headpointer);
+                }
+                //Send message back to user process
+                printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
+                strcpy(buf.strData, "1");
+                buf.intData = getpid();
+                buf.mtype = childpid;
+                if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+                sleep(1);     
             }
-            //Send message back to user process
-            printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
-            strcpy(buf.strData, "1");
-            buf.intData = getpid();
-            buf.mtype = childpid;
-            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-            sleep(1);     
         }
         if(numofchild == 2){
             break;
