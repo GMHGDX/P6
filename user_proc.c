@@ -39,14 +39,10 @@ int main(int argc, char *argv[]){
 
     //intialize page table to zero
     int pageTable[32]; //Initialize and write page table as all zeros
-    printf("--Page Table--\n");
     for(i = 0; i < 32; i++){
-        printf("Page%i\t", i+1);
         pageTable[i] = -1;
-        printf("%i\t",pageTable[i]);
-        printf("\n");
     }
-    printf("NEW PROCESS TABLE!^^\n");
+    printf("NEW PROCESS IN THE HOUSE!\n");
 
     //read system time from memory
     struct Table readFromMemWorker;
