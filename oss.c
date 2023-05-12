@@ -284,12 +284,14 @@ int main(int argc, char *argv[]){
                 buf.intData = getpid();
                 buf.mtype = childpid;
                 if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-                sleep(1);     
+                sleep(1); 
+        }    
 
         if(numofchild == 3){
             break;
         } 
     }
+
 
     printf("deleting memory\n");
     shmdt( shm_ptr ); // Detach from the shared memory segment
