@@ -39,14 +39,14 @@ int main(int argc, char *argv[]){
     key_t msqkey;
     int msqid;
     msgbuffer buf;
-    int frameTable[16][4]; //Initialize frame table
+    int frameTable[256][4]; //Initialize frame table
     int frame;
     int addressInFrame;
 
     //Initialize empty frame table (all zeros)
     int i, j;
     printf("\t\tOccupied\tDirtyBit\tpage\n");
-    for(i = 0; i < 16; i++){
+    for(i = 0; i < 256; i++){
         printf("Frame %i:\t", i);
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
@@ -189,7 +189,7 @@ int main(int argc, char *argv[]){
             //Read/write from/to frame table----------------------------------------------------------------------------------------------------
             inFrame = 0;
             if(readWrite == 1){ //process is requesting to read
-                for(i = 0; i < 16; i++){//Search frame Table for address
+                for(i = 0; i < 256; i++){//Search frame Table for address
                     if(frameTable[i][3] == memoryAddress){
                         frame = i; 
                         inFrame++; 
@@ -208,7 +208,7 @@ int main(int argc, char *argv[]){
             }
             if(readWrite == 2){ //Process is requesting to write---------------------------------------------------------------------------------
                 addressInFrame = 0;
-                for(i = 0; i < 16; i++){//Search frame Table for address
+                for(i = 0; i < 256; i++){//Search frame Table for address
                     if(frameTable[i][3] == memoryAddress){
                         addressInFrame = memoryAddress;
                         frame = i; 
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]){
                 if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
                     printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
                     printf("\t\tOccupied\tDirtyBit\tpage\n");
-                    for(i = 0; i < 16; i++){
+                    for(i = 0; i < 256; i++){
                         printf("Frame %i:\t", i);
                         for(j = 0; j < 4; j++){
                             if(j == 0){
@@ -246,8 +246,8 @@ int main(int argc, char *argv[]){
                     frameTable[headpointer][1] = 1; //dirty bit
                     frameTable[headpointer][0] = 1; //unoccupied
                     headpointer++;
-                    if(headpointer >= 16){
-                            headpointer = 0;//Return headpointer to the top of the frameif it goes past 16
+                    if(headpointer >= 256){
+                            headpointer = 0;//Return headpointer to the top of the frameif it goes past 256
                     }          
 
                     printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
@@ -255,7 +255,7 @@ int main(int argc, char *argv[]){
 
                     //print the frame table
                     printf("\t\tOccupied\tDirtyBit\tpage\n");
-                    for(i = 0; i < 16; i++){
+                    for(i = 0; i < 256; i++){
                         printf("Frame %i:\t", i);
                         for(j = 0; j < 4; j++){
                             if(j == 0){
