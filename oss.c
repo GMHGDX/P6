@@ -132,7 +132,7 @@ int main(int argc, char *argv[]){
         writeToMem.currentTime = currentTime;
         *shm_ptr = writeToMem;
 
-        if(numofchild <= 1 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 3 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
@@ -286,7 +286,7 @@ int main(int argc, char *argv[]){
                 // }
             }
         }
-        if(numofchild == 3){
+        if(numofchild == 4){
             break;
         } 
     }
