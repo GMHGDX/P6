@@ -17,7 +17,6 @@ int main(int argc, char *argv[]){
     int randomOffset;
     int page;
     int readWrite;
-    int checkResponse;
     int frameNumber;
 
     srand(time(0) + getpid()); //seed for random number generator
