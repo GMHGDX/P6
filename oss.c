@@ -274,13 +274,13 @@ int main(int argc, char *argv[]){
                         
                     printf("OSS: Head is now at frame %i\n", headpointer); //print head of process
                 }
-                //Send message back to user process
-                printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
-                strcpy(buf.strData, "1");
-                buf.intData = getpid();
-                buf.mtype = childpid;
-                if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
-                sleep(1);     
+                // //Send message back to user process
+                // printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
+                // strcpy(buf.strData, "33");
+                // buf.intData = getpid();
+                // buf.mtype = childpid;
+                // if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+                // sleep(1);     
             }
         }
         if(numofchild == 3){
