@@ -95,23 +95,8 @@ int main(int argc, char *argv[]){
     //start the simulated system clock
     if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) { perror( "clock gettime" ); return EXIT_FAILURE; }
 
-    //intialize page table to zero
-    int pageTable[32]; //Initialize and write page table as all zeros
-    printf("--Page Table--\n");
-    for(i = 0; i < 32; i++){
-        printf("Page%i\t", i+1);
-        pageTable[i] = -1;
-        printf("%i\t",pageTable[i]);
-        printf("\n");
-    }
-
-    //Write page table to memory
+    //Write time tom memory
     struct Table writeToMem;
-    for(i = 0; i < 32; i++){
-        writeToMem.pageTable[i] = pageTable[i];
-    }
-    writeToMem.currentTime = 0;
-    *shm_ptr = writeToMem;
 
     //intialize values for use in while loop
     double currentTime; //time going into shared memory
@@ -144,11 +129,7 @@ int main(int argc, char *argv[]){
         currentTime = sec + nano/BILLION;
 
         //Write the current time to memory for children to read
-        readFromMem = *shm_ptr;
         writeToMem.currentTime = currentTime;
-        for(i = 0; i < 32; i++){
-            writeToMem.pageTable[i] = readFromMem.pageTable[i];
-        }
         *shm_ptr = writeToMem;
 
         if(numofchild <= 3){ //launch only one child for now //&& limitReach >= currentTime
@@ -169,7 +150,6 @@ int main(int argc, char *argv[]){
                 return 1;
             }
         }
-
         msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
         
         //Seperate the message by white space and assign it ot page number, memory address, and read/write

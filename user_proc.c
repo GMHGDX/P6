@@ -16,10 +16,10 @@ int main(int argc, char *argv[]){
     int memoryAddress;
     int randomOffset;
     int page;
-    //int Systime;
     int readWrite;
     int checkResponse;
     int frameNumber;
+    int pageTable[32];
 
     srand(time(0) + getpid()); //seed for random number generator
 
@@ -37,6 +37,16 @@ int main(int argc, char *argv[]){
     //attatch memory we allocated to our process and point pointer to it 
     struct Table *shm_ptr = (struct Table*) (shmat(shm_id, 0, 0));
     if (shm_ptr <= 0) { fprintf(stderr,"Child Shared memory attach failed\n"); exit(1); }
+
+    //intialize page table to zero
+    int pageTable[32]; //Initialize and write page table as all zeros
+    printf("--Page Table--\n");
+    for(i = 0; i < 32; i++){
+        printf("Page%i\t", i+1);
+        pageTable[i] = -1;
+        printf("%i\t",pageTable[i]);
+        printf("\n");
+    }
 
     //read system time from memory
     struct Table readFromMemWorker;
@@ -83,19 +93,18 @@ int main(int argc, char *argv[]){
     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
 
     if(readWrite == 2){  //recieve frame table from OSS
-    if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
-        { perror("2 failed to receive message from parent\n"); exit(1); }
-        
+        if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
         frameNumber = atoi(buf.strData);
+
         //write new page table to memory
         struct Table writeToMemWorker;
         //Print contents of page table
         printf("--Page Table--\n");
         for(i = 0; i < 32; i++){
             printf("Page%i\t", i+1);
-            writeToMemWorker.pageTable[i] = readFromMemWorker.pageTable[i];
-            writeToMemWorker.pageTable[page-1] = frameNumber;
-            printf("%i\t", writeToMemWorker.pageTable[i]);
+            pageTable[i];
+            pageTable[page-1] = frameNumber;
+            printf("%i\t", pageTable[i]);
             printf("\n");
         }
         writeToMemWorker.currentTime = readFromMemWorker.currentTime;
