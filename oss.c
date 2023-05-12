@@ -202,7 +202,7 @@ int main(int argc, char *argv[]){
                 strcpy(buf.strData, "1");
                 buf.intData = getpid();
                 buf.mtype = childpid;
-                if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); } 
+                if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("1 msgsnd from child to parent failed\n"); exit(1); } 
             }
             if(readWrite == 2){ //Process is requesting to write---------------------------------------------------------------------------------
                 addressInFrame = 0;
@@ -270,7 +270,7 @@ int main(int argc, char *argv[]){
                     strcpy(buf.strData, frameString);
                     buf.intData = getpid();
                     buf.mtype = childpid;
-                    if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+                    if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("2 msgsnd from child to parent failed\n"); exit(1); }
                         
                     printf("OSS: Head is now at frame %i\n", headpointer); //print head of process
                     printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);

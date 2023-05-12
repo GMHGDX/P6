@@ -102,7 +102,7 @@ int main(int argc, char *argv[]){
             strcpy(buf.strData, together); //copy our new string into string data buffer
             buf.intData = getpid();
             buf.mtype = (long)getppid();
-            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("W2 msgsnd from child to parent failed\n"); exit(1); }
 
             if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
             frameNumber = atoi(buf.strData);
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]){
             strcpy(buf.strData, deadProc); //copy our new string into string data buffer
             buf.intData = getpid();
             buf.mtype = (long)getppid();
-            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
+            if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("W1 msgsnd from child to parent failed\n"); exit(1); }
             break;
         }
     }
