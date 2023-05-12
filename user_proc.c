@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
                 printf("--Page Table--\n");
                 for(i = 0; i < 32; i++){
                     printf("Page%i\t", i+1);
-                    pageTable[page-1] = frameNumber;
+                    pageTable[page-1] = frameNumber-1;
                     printf("%i\t", pageTable[i]);
                     printf("\n");
                 }
