@@ -104,9 +104,10 @@ int main(int argc, char *argv[]){
             buf.mtype = (long)getppid();
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("msgsnd from child to parent failed\n"); exit(1); }
 
-            if(readWrite == 2){  //recieve frame table from OSS
             if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
-                frameNumber = atoi(buf.strData);
+            frameNumber = atoi(buf.strData);
+
+            if(readWrite == 2 && frameNumber <= 32){  //recieve frame from OSS
                 printf("FRAME NUMBER RECIEVEDEDEDED: %i\n", frameNumber);
 
                 //Print contents of page table
@@ -121,18 +122,19 @@ int main(int argc, char *argv[]){
                 *shm_ptr = writeToMemWorker;
             }
             //Recieve message back from oss on when child should terminate
-            while(1){
-                if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
-                {
-                    perror("2 failed to receive message from parent\n"); 
-                    exit(1);
-                }
-                checkResponse = atoi(buf.strData);
+            // while(1){
+            //     if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) 
+            //     {
+            //         perror("2 failed to receive message from parent\n"); 
+            //         exit(1);
+            //     }
+            //     checkResponse = atoi(buf.strData);
 
-                if(checkResponse == 33){
-                    break;
-                }
-            }
+            //     if(checkResponse == 33){
+            //         break;
+            //     }
+            // }
+            sleep(1);
         }
         if(loopAgain == 2){///////////////////////////////////////////////////////////////
             printf("Worker - Child is terminating!\n");
