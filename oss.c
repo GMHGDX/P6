@@ -277,7 +277,7 @@ int main(int argc, char *argv[]){
                 }
             }
         }
-        printf("CURRENT NUM OF CHILD-----------------: %i", childnum);
+        printf("CURRENT NUM OF CHILD-----------------: %i", numofchild);
         if(currentTime >= 3 || (processRunning == 0 && numofchild == 101)){
             break;
         } 
