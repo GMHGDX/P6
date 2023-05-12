@@ -42,8 +42,6 @@ int main(int argc, char *argv[]){
     for(i = 0; i < 32; i++){
         pageTable[i] = -1;
     }
-    printf("NEW PROCESS IN THE HOUSE!\n");
-
     //read system time from memory
     struct Table readFromMemWorker;
     struct Table writeToMemWorker;
@@ -118,7 +116,7 @@ int main(int argc, char *argv[]){
             }
         }
         if(loopAgain > 70){///////////////////////////////////////////////////////////////
-            printf("Worker - Child is terminating!\n");
+            printf("Worker: Child is terminating!\n");
             snprintf(deadProc, sizeof(deadProc), "%i", dead);
             strcpy(buf.strData, deadProc); //copy our new string into string data buffer
             buf.intData = getpid();
