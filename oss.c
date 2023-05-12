@@ -45,16 +45,10 @@ int main(int argc, char *argv[]){
 
     //Initialize empty frame table (all zeros)
     int i, j;
-    printf("\t\tOccupied\tDirtyBit\tpage\n");
     for(i = 0; i < 256; i++){
-        printf("Frame %i:\t", i);
         for(j = 0; j < 4; j++){
             frameTable[i][j] = 0;
-            if(j!=3){
-                printf("%i\t\t",frameTable[i][j]);
-            }
         }
-        printf("\n");
     }
 
     //Create message queue
