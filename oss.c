@@ -156,7 +156,7 @@ int main(int argc, char *argv[]){
         if(buf.strData == "404"){
             //check if a process is dead (skull emoji)
             msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0);
-            dead = atoi(buf.StrData);
+            dead = atoi(buf.strData);
             if(dead == 404){
                 processRunning--;
             }
