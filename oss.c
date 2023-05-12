@@ -131,6 +131,7 @@ int main(int argc, char *argv[]){
         if(currentTime >= 3 || (processRunning == 0 && numofchild == 101)){
             break;
         }
+        printf("THIS IS THE CURRENT TIMMMMMMEEEE: %f\n", currentTime);
         if(numofchild <= 0 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
