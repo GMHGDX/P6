@@ -111,7 +111,6 @@ int main(int argc, char *argv[]){
     char * procChoice;
     int inFrame = 0;
     int headpointer = 0;
-    bool notwritten = false;
     char frameString[50];
     int dead;
     int processRunning = 0;
