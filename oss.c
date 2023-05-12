@@ -152,7 +152,7 @@ int main(int argc, char *argv[]){
                 return 1;
             }
         }
-        msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), IPC_NOWAIT); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
+        msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0); // IPC_NOWAIT receive a message from user_proc, but only one for our PID, dont wait for a message
         dead = atoi(buf.strData);
         if(dead == 404){
             processRunning--;
