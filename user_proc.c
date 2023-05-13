@@ -4,6 +4,7 @@
 #include <sys/shm.h> //Shared memory
 #include <sys/msg.h> //message queues
 #include <time.h> //to create system time
+#include <sys/errno.h> //errno
 #include "oss.h"
 
 int main(int argc, char *argv[]){
