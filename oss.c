@@ -131,7 +131,7 @@ int main(int argc, char *argv[]){
         if(currentTime >= 3 || (processRunning == 0 && numofchild == 101)){
             break;
         }
-        if(numofchild <= 100 && processRunning < 16){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 100 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
@@ -154,6 +154,7 @@ int main(int argc, char *argv[]){
         dead = atoi(buf.strData);
         if(dead == 404){
             processRunning--;
+            wait(0);
         }else{
             //Seperate the message by white space and assign it ot page number, memory address, and read/write
             procChoice = strtok(buf.strData, " ");
