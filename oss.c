@@ -163,6 +163,7 @@ int main(int argc, char *argv[]){
         }else{
             if(dead == 404){
             processRunning--;
+            printf("THESE PROCESSES ARE RUNNING: %i\n", processRunning);
             wait(0);
             }else{
                 //Seperate the message by white space and assign it ot page number, memory address, and read/write
