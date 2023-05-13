@@ -56,7 +56,6 @@ int main(int argc, char *argv[]){
     char *together;
     int dead = 404;
 
-    fileLogging = fopen(logFile, "w+"); //Open the log file before input begins
     while(1){ //Check to terminate after it loops 1000 times, randomly terminate
         loopAgain = randomNumberGenerator(100);
         if(loopAgain <= 70 || firstLoop == 0){////////////////////////////////////////////////////////////////////////////////////////////////////
