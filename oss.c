@@ -306,7 +306,7 @@ int main(int argc, char *argv[]){
     }
 
     printf("deleting memory\n");
-    shmdt( shm_ptr ); // Detach from the shared memory segment
+    shmdt( shm_ptr ); // Detach from the shared memory segments
     shmctl( shm_id, IPC_RMID, NULL ); // Free shared memory segment shm_id 
 
     if (msgctl(msqid, IPC_RMID, NULL) == -1) { perror("msgctl"); return EXIT_FAILURE; } //Removes the message queue immediately
