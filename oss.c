@@ -110,7 +110,6 @@ int main(int argc, char *argv[]){
     char frameString[50];
     int dead;
     int processRunning = 0;
-    int keepLooping;
 
     while(1) {
         //stop simulated system clock and get seconds and nanoseconds
