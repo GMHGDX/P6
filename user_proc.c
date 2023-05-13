@@ -6,6 +6,8 @@
 #include <time.h> //to create system time
 #include "oss.h"
 
+#include <sys/wait.h> //wait
+
 int main(int argc, char *argv[]){
     msgbuffer buf;
     buf.mtype = 1;
@@ -97,6 +99,7 @@ int main(int argc, char *argv[]){
 
             if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), IPC_NOWAIT) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
             frameNumber = atoi(buf.strData);
+            wait(0);
 
             if(readWrite == 2 && frameNumber <= 32){  //recieve frame from OSS
 

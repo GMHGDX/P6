@@ -193,9 +193,6 @@ int main(int argc, char *argv[]){
                 } 
                 printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
                 fprintf(fileLogging, "OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
-        
-                printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
-                fprintf(fileLogging, "OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
 
                 //Read/write from/to frame table----------------------------------------------------------------------------------------------------
                 inFrame = 0;
