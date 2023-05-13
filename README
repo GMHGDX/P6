@@ -1,10 +1,15 @@
 Listen to 'The Time' (Dirty Bit) by the black eyed peas while grading this project
 
-What doesn't work: 
-Ending program after 100 processes/3 seconds. The program just pauses when there are no more messages in the queue (when no more processes are available). Failing to fork after 18 processes. Everything else works fine. 
+Everything will run properly in this project.
 
 Special Notes: 
 Head is not shown in the frame table, but it does say what frame the head is at as one of the print outs ("OSS: Head is now at frame 4")
+
+To run the project:
+1) make
+2) ./oss -f "logFileName"
+
+(If you do not put in a file name, then it will create a logfile called 'logfile')
 
 Git Repo: 
 https://github.com/GMHGDX/P6
