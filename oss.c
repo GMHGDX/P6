@@ -131,8 +131,7 @@ int main(int argc, char *argv[]){
         if(currentTime >= 3 || (processRunning == 0 && numofchild == 101)){
             break;
         }
-        printf("THIS IS THE CURRENT TIMMMMMMEEEE: %f\n", currentTime);
-        if(numofchild <= 0 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
+        if(numofchild <= 100 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
             printf("CURRENT NUM OF CHILD-----------------: %i\n", numofchild);
@@ -156,6 +155,7 @@ int main(int argc, char *argv[]){
         dead = atoi(buf.strData);
         if(dead == 404){
             processRunning--;
+            printf("HOW MANY PROCESS ARE RUNNNNNING: %i", processRunning);
         }else{
             //Seperate the message by white space and assign it ot page number, memory address, and read/write
             procChoice = strtok(buf.strData, " ");
