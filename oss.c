@@ -13,6 +13,7 @@
 #include <sys/wait.h> //wait
 #include <string.h> //remedy exit warning
 #include <sys/msg.h> //message queues
+#include <sys/errno.h>
 #include "oss.h"
 
 //msgbuffer for message queue
