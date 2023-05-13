@@ -55,6 +55,7 @@ int main(int argc, char *argv[]){
     char deadProc[50];
     char *together;
     int dead = 404;
+    int msgresult;
 
     while(1){ //Check to terminate after it loops 1000 times, randomly terminate
         loopAgain = randomNumberGenerator(100);
@@ -95,21 +96,28 @@ int main(int argc, char *argv[]){
             buf.mtype = (long)getppid();
             if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("W2 msgsnd from child to parent failed\n"); exit(1); }
 
-            if (msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), 0) == -1) { perror("2 failed to receive message from parent\n"); exit(1); }
+            msgresult = msgrcv(msqid, &buf, sizeof(msgbuffer), getpid(), IPC_NOWAIT);
             frameNumber = atoi(buf.strData);
-
-            if(readWrite == 2 && frameNumber <= 32){  //recieve frame from OSS
-
-                //Print contents of page table
-                printf("--Page Table--\n");
-                for(i = 0; i < 32; i++){
-                    printf("Page%i\t", i+1);
-                    pageTable[page-1] = frameNumber-1;
-                    printf("%i\t", pageTable[i]);
-                    printf("\n");
+            if(msgresult == -1){
+                if(errno == ENOMSG){
+                    //didnt get message, ignore
+                }else{
+                    printf("ERROR: Something wrong with message recieved");
                 }
-                writeToMemWorker.currentTime = readFromMemWorker.currentTime;
-                *shm_ptr = writeToMemWorker;
+            }else{
+                if(readWrite == 2 && frameNumber <= 32){  //recieve frame from OSS
+
+                    //Print contents of page table
+                    printf("--Page Table--\n");
+                    for(i = 0; i < 32; i++){
+                        printf("Page%i\t", i+1);
+                        pageTable[page-1] = frameNumber-1;
+                        printf("%i\t", pageTable[i]);
+                        printf("\n");
+                    }
+                    writeToMemWorker.currentTime = readFromMemWorker.currentTime;
+                    *shm_ptr = writeToMemWorker;
+                }
             }
         }
         if(loopAgain > 70){///////////////////////////////////////////////////////////////
