@@ -230,7 +230,7 @@ int main(int argc, char *argv[]){
                                     printf("no-");
                                 }
                             }
-                            if(j!=3){
+                            if(j!=3 || j!=2){
                                 printf("%i\t\t",frameTable[i][j]);
                             }
                         }
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]){
                                     printf("no-");
                                 }
                             }
-                            if(j!=3){
+                            if(j!=3 || j!=2){
                                 printf("%i\t\t",frameTable[i][j]);
                             }
                         }
