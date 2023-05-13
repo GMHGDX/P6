@@ -56,10 +56,10 @@ int main(int argc, char *argv[]){
     char *together;
     int dead = 404;
 
+    fileLogging = fopen(logFile, "w+"); //Open the log file before input begins
     while(1){ //Check to terminate after it loops 1000 times, randomly terminate
         loopAgain = randomNumberGenerator(100);
         if(loopAgain <= 70 || firstLoop == 0){////////////////////////////////////////////////////////////////////////////////////////////////////
-            printf("Worker - Child Decide to loop again!\n");
             firstLoop++;
             //request memory to random page
             page = randomNumberGenerator(32); //max pages a process can request is 32
@@ -114,7 +114,6 @@ int main(int argc, char *argv[]){
             }
         }
         if(loopAgain > 70){///////////////////////////////////////////////////////////////
-            printf("Worker: Child is terminating!\n");
             snprintf(deadProc, sizeof(deadProc), "%i", dead);
             strcpy(buf.strData, deadProc); //copy our new string into string data buffer
             buf.intData = getpid();

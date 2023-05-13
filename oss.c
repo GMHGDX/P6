@@ -134,7 +134,6 @@ int main(int argc, char *argv[]){
         if(numofchild <= 100 && processRunning < 18){ //launch only one child for now //&& limitReach >= currentTime
             numofchild++;
             processRunning++;
-            printf("CURRENT NUM OF CHILD-----------------: %i\n", numofchild);
             milliSec = randomNumberGenerator(milliLim); //create random number for next child to fork at 
             limitReach = sec + (double)(milliSec/1000) + (double)(nano/BILLION); //combine sec, millisec, and nanosec as one decimal to get new time to fork process
 
@@ -155,7 +154,6 @@ int main(int argc, char *argv[]){
         dead = atoi(buf.strData);
         if(dead == 404){
             processRunning--;
-            printf("HOW MANY PROCESS ARE RUNNNNNING: %i", processRunning);
         }else{
             //Seperate the message by white space and assign it ot page number, memory address, and read/write
             procChoice = strtok(buf.strData, " ");
@@ -181,9 +179,12 @@ int main(int argc, char *argv[]){
             }
             if(readWrite == 2){ //Assign write string
                 strcpy(readWriteStr, "write");
-            }
+            } 
             printf("OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
+            fprintf(logFile, "OSS: PID %d requesting %s of address %i at time %lf\n",childpid, readWriteStr, memoryAddress, currentTime);
+    
             printf("OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
+            fprintf(logFile, "OSS - I recieved the message: Page number (%i), permission: (%i), memory address (%i)\n", page, readWrite, memoryAddress);
 
             //Read/write from/to frame table----------------------------------------------------------------------------------------------------
             inFrame = 0;
@@ -193,11 +194,13 @@ int main(int argc, char *argv[]){
                         frame = i; 
                         inFrame++; 
                         printf("OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memoryAddress, frame, childpid, currentTime); 
+                        fprintf(logFile,"OSS: Address %i in frame %i, giving data to PID %d at time %lf\n", memoryAddress, frame, childpid, currentTime);
                         frameTable[i][0] = 1; // set occupied to 1/yes  
                     }
                 }  
                 if(inFrame == 0){
                     printf("OSS: Address %i is not in a frame, giving data to PID %d at time %lf\n", memoryAddress, childpid, currentTime);
+                    fprintf(logFile,"OSS: Address %i is not in a frame, giving data to PID %d at time %lf\n", memoryAddress, childpid, currentTime);
                 }
                 //Send message back to user process
                 strcpy(buf.strData, "1");
@@ -219,26 +222,34 @@ int main(int argc, char *argv[]){
                 }
                 if(memoryAddress == addressInFrame){ //The address is in frame/////////////////////////////////////////////////////////
                     printf("OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
-                    printf("\t\tOccupied\tDirtyBit\tpage\n");
+                    fprintf(logFile,"OSS: Address %i in frame %i, writing data to frame at time %lf\n", memoryAddress, frame, currentTime);
+                    printf("\t\tOccupied\tDirtyBit\n");
+                    fprintf(logFile,"\t\tOccupied\tDirtyBit\n");
                     for(i = 0; i < 256; i++){
                         printf("Frame %i:\t", i);
+                        fprintf(logFile,"Frame %i:\t", i);
                         for(j = 0; j < 4; j++){
                             if(j == 0){
                                 if(frameTable[i][0] == 1){
                                     printf("Yes-");
+                                    fprintf(logFile,"Yes-");
                                 }if(frameTable[i][0] == 0){
                                     printf("no-");
+                                    fprintf(logFile,"no-");
                                 }
                             }
                             if(j!=3 && j!=2){
                                 printf("%i\t\t",frameTable[i][j]);
+                                fprintf(logFile,"%i\t\t",frameTable[i][j]);
                             }
                         }
                         printf("\n");
+                        fprintf(logFile,"\n");
                     }
                 }
                 else{ //The address is not in frame////////////////////////////////////////////////////////////////////////////////////
                     printf("OSS: Address %i is not in a frame, pageFault. Searching with head where to put the new address\n", memoryAddress);
+                    fprintf(logFile,"OSS: Address %i is not in a frame, pageFault. Searching with head where to put the new address\n", memoryAddress);
                     
                     frameTable[headpointer][3] = memoryAddress; //memory address
                     frameTable[headpointer][2] = page; //page number
@@ -250,25 +261,33 @@ int main(int argc, char *argv[]){
                     }          
 
                     printf("OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
+                    fprintf(logFile,"OSS: Clearing frame %i and swapping in PIDs %d page %i\n", headpointer ,childpid, page);
                     printf("OSS: Indicating to PID %d that write has happened to address %i\n", childpid, memoryAddress);
+                    fprintf(logFile,"OSS: Indicating to PID %d that write has happened to address %i\n", childpid, memoryAddress);
 
                     //print the frame table
-                    printf("\t\tOccupied\tDirtyBit\tpage\n");
+                    printf("\t\tOccupied\tDirtyBit\n");
+                    fprintf(logFile,"\t\tOccupied\tDirtyBit\n");
                     for(i = 0; i < 256; i++){
                         printf("Frame %i:\t", i);
+                        fprintf(logFile,"Frame %i:\t", i);
                         for(j = 0; j < 4; j++){
                             if(j == 0){
                                 if(frameTable[i][0] == 1){
                                     printf("Yes-");
+                                    fprintf(logFile,"Yes-");
                                 }if(frameTable[i][0] == 0){
                                     printf("no-");
+                                    fprintf(logFile,"no-");
                                 }
                             }
                             if(j!=3 && j!=2){
                                 printf("%i\t\t",frameTable[i][j]);
+                                fprintf(logFile,"%i\t\t",frameTable[i][j]);
                             }
                         }
                         printf("\n");
+                        fprintf(logFile,"\n");
                     }
                     //Send message back to user process
                     snprintf(frameString, sizeof(frameString), "%i", headpointer);
@@ -278,7 +297,9 @@ int main(int argc, char *argv[]){
                     if(msgsnd(msqid, &buf, sizeof(msgbuffer), 0 == -1)){ perror("2 msgsnd from child to parent failed\n"); exit(1); }
                         
                     printf("OSS: Head is now at frame %i\n", headpointer); //print head of process
+                    fprintf(logFile,"OSS: Head is now at frame %i\n", headpointer);
                     printf("OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
+                    fprintf(logFile,"OSS: Indicating to %d that write has happened to address %i\n", childpid, memoryAddress);
                 }
             }
         } 
